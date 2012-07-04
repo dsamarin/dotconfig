@@ -1,8 +1,14 @@
 #!/bin/bash
 
-ln -s $PWD/.vim $HOME/.vim
-ln -s $PWD/.vimrc $HOME/.vimrc
-ln -s $PWD/.bashrc $HOME/.bashrc
-ln -s $PWD/.bash_aliases $HOME/.bash_aliases
+files=(.vim .vimrc .bashrc .bash_aliases)
+files_len=${#files[*]}
 
-echo 'Symlinks created.'
+for ((i=0; i<files_len; i++)); do
+	if [[ -e "$HOME/${files[i]}" ]]; then
+		rm -ri "$HOME/${files[i]}"
+	fi
+	echo "Creating ${files[i]}..."
+	ln -s "$PWD/${files[i]}" "$HOME/${files[i]}"
+done
+
+echo 'Done.'
