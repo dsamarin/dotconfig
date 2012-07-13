@@ -1,10 +1,18 @@
 #!/bin/bash
 
+# Identify Dell computer
+DELL=false
+if [[ "$(hostname)" == "server" ]]; then
+	DELL=true
+fi
+
 # Dell access
-alias dell='ssh -X 192.168.2.8'
-alias dellr='ssh -C -X eboyjr.oftn.org'
-alias irc='dell -t irc'
-alias ircr='dellr -t irc'
+if ! $DELL; then
+	alias dell='ssh -X 192.168.2.8'
+	alias dellr='ssh -C -X eboyjr.oftn.org'
+	alias irc='dell -t irc'
+	alias ircr='dellr -t irc'
+fi
 
 # Alert alias
 alias alert_helper='history|tail -n1|sed -e "s/^\s*[0-9]\+\s*//" -e "s/;\s*alert$//"'
@@ -29,7 +37,12 @@ search() {
 fileup() {
 	local basename="$(basename "$@")"
 	local url="http://eboyjr.oftn.org:8080/tmp/$basename"
-	scp "$@" eboyjr@eboyjr.oftn.org:/var/www/main/tmp/
+	if $DELL; then
+		cp "$@" "/var/www/main/tmp/$@"
+		chmod 0777 "/var/www/main/tmp/$@"
+	else
+		scp "$@" eboyjr@eboyjr.oftn.org:/var/www/main/tmp/
+	fi
 	echo -n "$url" | pbcopy
 	echo "Copied $url to clipboard."
 }
