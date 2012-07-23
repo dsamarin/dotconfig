@@ -17,7 +17,7 @@ set formatoptions=
 set t_Co=256
 
 syntax enable
-colorscheme wombat
+colorscheme lucius
 
 set number
 set ignorecase
