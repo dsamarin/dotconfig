@@ -1,6 +1,6 @@
 #!/bin/bash
 
-files=(.vim .vimrc .bashrc .bash_aliases)
+files=(.vim .vimrc .bashrc .bash_aliases .gitconfig)
 files_len=${#files[*]}
 
 for ((i=0; i<files_len; i++)); do
