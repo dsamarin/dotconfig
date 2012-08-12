@@ -1,14 +1,26 @@
-# History
+
+###########
+# History #
+###########
+
 HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 
-# Completion
+
+##############
+# Completion #
+##############
+
 zstyle :compinstall filename '/home/eboyjr/.zshrc'
 autoload -Uz compinit
 compinit
 
-# Key bindings
+
+################
+# Key bindings #
+################
+
 [[ -n "${terminfo[khome]}" ]] && bindkey "${terminfo[khome]}" beginning-of-line
 [[ -n "${terminfo[kend]}"  ]] && bindkey "${terminfo[kend]}"  end-of-line
 [[ -n "${terminfo[kich1]}" ]] && bindkey "${terminfo[kich1]}" overwrite-mode
@@ -20,12 +32,28 @@ compinit
 [[ -n "${terminfo[kLFT5]}" ]] && bindkey "${terminfo[kLFT5]}" backward-word
 [[ -n "${terminfo[kRIT5]}" ]] && bindkey "${terminfo[kRIT5]}" forward-word
 
-function zle-line-init () { echoti smkx; }
-function zle-line-finish () { echoti rmkx; }
+function zle-line-init () {
+	if (( ${+terminfo[smkx]} ))
+	then
+		echoti smkx
+	fi
+}
+
+function zle-line-finish () {
+	if (( ${+terminfo[rmkx]} ))
+	then
+		echoti rmkx
+	fi
+}
+
 zle -N zle-line-init
 zle -N zle-line-finish
 
-# Prompts
+
+###########
+# Prompts #
+###########
+
 setopt prompt_subst
 
 PROMPT='%(?::(exit %F{red}%?%f%)
@@ -33,18 +61,99 @@ PROMPT='%(?::(exit %F{red}%?%f%)
 
 RPROMPT='$(zsh_prompt_git_branch)'
 
-zsh_prompt_git_branch() {
+function zsh_prompt_git_branch() {
 	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/%F{yellow}(\1)%f/'
 }
 
-# Color commands
+
+########################
+# Identify Dell server #
+########################
+
+unset DELL
+if [[ "$(hostname)" == "server" ]]; then
+	DELL=
+fi
+
+
+#######################
+# Dell access and IRC #
+#######################
+
+if (( ${+DELL} )); then
+	function irc() {
+		screen -qr irssi
+		if (( $? ))
+		then
+			screen -qx irssi
+			if (( $? ))
+			then
+				screen -qS irssi irssi
+				if (( $? ))
+				then
+					echo 'Could not create irssi session.'
+				fi
+			fi
+		fi
+	}
+else
+	alias dell='ssh -X eboyjr@192.168.2.8'
+	alias dellr='ssh -C -X eboyjr@eboyjr.oftn.org'
+fi
+
+
+##################
+# Clipboard shit #
+##################
+
+if (( ${+commands[xclip]} )); then
+	alias pbcopy='xclip -selection clipboard'
+	alias pbpaste='xclip -selection clipboard -o'
+else
+	alias pbcopy='echo "xlip is not available on this system"'
+	alias pbpaste='pbcopy'
+fi
+
+
+##################
+# Color commands #
+##################
+
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 
-# Editing
+function colors() {
+	local -a colors
+	colors=(default black red green yellow blue magenta cyan white)
+
+	print -n -- "\n           "
+	for color in $colors; do
+		print -n " ${(r:7:: :)color}  "
+	done
+
+	# Print each row
+	for fg in $colors; do
+		print -n -- "\n\n  ${(l:7:: :)fg}  "
+		for bg in $colors; do
+			print -nP -- " %K{$bg}%F{$fg}abc %Babc%b%f%k  "
+		done
+	done
+
+	print -n -- "\n\n"
+}
+
+
+###########
+# Editing #
+###########
+
 alias vim='vim -p'
 
-# Directory traversal
+
+#######################
+# Directory traversal #
+#######################
+
 alias /='cd /'
 alias ~='cd ~'
 alias ..='cd ..'
