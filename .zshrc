@@ -32,14 +32,14 @@ compinit
 [[ -n "${terminfo[kLFT5]}" ]] && bindkey "${terminfo[kLFT5]}" backward-word
 [[ -n "${terminfo[kRIT5]}" ]] && bindkey "${terminfo[kRIT5]}" forward-word
 
-function zle-line-init () {
+function zle-line-init {
 	if (( ${+terminfo[smkx]} ))
 	then
 		echoti smkx
 	fi
 }
 
-function zle-line-finish () {
+function zle-line-finish {
 	if (( ${+terminfo[rmkx]} ))
 	then
 		echoti rmkx
@@ -61,8 +61,32 @@ PROMPT='%(?::(exit %F{red}%?%f%)
 
 RPROMPT='$(zsh_prompt_git_branch)'
 
-function zsh_prompt_git_branch() {
+function zsh_prompt_git_branch {
 	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/%F{yellow}(\1)%f/'
+}
+
+
+#########
+# Title #
+#########
+
+function title {
+	if [[ $TERM == "screen" ]]; then
+		print -nR $'\033k'$1$'\033'\\
+		print -nR $'\033]0;'$2$'\a'
+	elif [[ $TERM == "xterm" || $TERM == "rxvt" ]]; then
+		print -nR $'\033]0;'$*$'\a'
+	fi
+}
+
+function precmd {
+	title "$(hostname)"
+}
+
+function preexec {
+	emulate -L zsh
+	local -a cmd; cmd=(${(z)1})
+	title "$(hostname): $cmd[1]:t $cmd[2,-1]"
 }
 
 
@@ -81,7 +105,7 @@ fi
 #######################
 
 if (( ${+DELL} )); then
-	function irc() {
+	function irc {
 		screen -qr irssi
 		if (( $? ))
 		then
@@ -122,7 +146,7 @@ fi
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 
-function colors() {
+function colors {
 	local -a colors
 	colors=(default black red green yellow blue magenta cyan white)
 
