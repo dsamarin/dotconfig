@@ -85,3 +85,6 @@ au BufRead,BufNewFile *.vapi            setfiletype vala
 hi link javaScriptGlobal NONE
 hi link javaScriptMember NONE
 hi link javaScriptMessage NONE
+
+" Markdown shit
+au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn}   setfiletype mkd
