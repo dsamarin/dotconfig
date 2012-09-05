@@ -140,6 +140,26 @@ fi
 
 
 ##################
+# Volume control #
+##################
+
+function volume {
+	local argument="$1"
+	if [[ -z "$argument" ]]; then
+		argument="100%"
+	else
+		argument="$argument%"
+	fi
+	if (( ${+commands[pactl]} )); then
+		print "pactl set-sink-volume 0 \"$argument\""
+		pactl set-sink-volume 0 -- "$argument"
+	else
+		print "volume: pactl command not available" 1>&2
+	fi
+}
+
+
+##################
 # Color commands #
 ##################
 

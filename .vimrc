@@ -10,11 +10,19 @@ if has("multi_byte")
 	set fileencodings=ucs-bom,utf-8,latin1
 endif
 
+set statusline=%#Special#%f%#Normal#\ %M%R%H%W%=%-15(%#Identifier#ch%#Normal#=%b,0x%B%)%-15(L%l\ C%c%V%)%#Special#%P
+set laststatus=2
+
 set virtualedit=onemore
 set formatoptions=
 
 " Allow colors
 set t_Co=256
+
+" If the Vim binary has no GUI support, shut up CSApprox
+if !has("gui_running")
+	let g:CSApprox_verbose_level = 0
+endif
 
 syntax enable
 colorscheme lucius
@@ -57,6 +65,7 @@ inoremap <C-z> <Esc>ui
 " set tags+=/home/eboyjr/.vim/systags
 set nocp
 filetype plugin on
+filetype indent on
 
 function! SuperCleverTab()
 	if strpart(getline('.'), 0, col('.') - 1) =~ '^\s*$'
