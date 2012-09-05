@@ -16,6 +16,11 @@ set formatoptions=
 " Allow colors
 set t_Co=256
 
+" If the Vim binary has no GUI support, shut up CSApprox
+if !has("gui_running")
+	let g:CSApprox_verbose_level = 0
+endif
+
 syntax enable
 colorscheme lucius
 
@@ -57,6 +62,7 @@ inoremap <C-z> <Esc>ui
 " set tags+=/home/eboyjr/.vim/systags
 set nocp
 filetype plugin on
+filetype indent on
 
 function! SuperCleverTab()
 	if strpart(getline('.'), 0, col('.') - 1) =~ '^\s*$'
