@@ -1,10 +1,15 @@
 #!/bin/bash
 
-files=(.vim .vimrc .bashrc .bash_aliases .gitconfig .zshrc)
+files=(.vim .vimrc .gitconfig .zshrc .irssi .ssh/config)
 files_len=${#files[*]}
 
+# For each file in the file list
 for ((i=0; i<files_len; i++)); do
+
+	# If file already exists
 	if [[ -e "$HOME/${files[i]}" ]]; then
+
+		# Prompt to delete it
 		while true; do
 			read -p "Do you wish to remove $HOME/${files[i]}? "
 			case $REPLY in
@@ -14,6 +19,8 @@ for ((i=0; i<files_len; i++)); do
 			esac
 		done
 	fi
+
+	# Create a symlink
 	echo "ln -s $PWD/${files[i]} $HOME/${files[i]}"
 	ln -s "$PWD/${files[i]}" "$HOME/${files[i]}"
 done
