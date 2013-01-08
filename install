@@ -7,7 +7,7 @@ files_len=${#files[*]}
 for ((i=0; i<files_len; i++)); do
 
 	# If file already exists
-	if [[ -e "$HOME/${files[i]}" ]]; then
+	if [[ -h "$HOME/${files[i]}" || -e "$HOME/${files[i]}" ]]; then
 
 		# Prompt to delete it
 		while true; do
