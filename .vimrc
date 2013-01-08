@@ -26,6 +26,9 @@ endif
 
 syntax enable
 colorscheme lucius
+LuciusDark
+
+set fillchars+=vert:\ 
 
 set number
 set ignorecase
@@ -65,7 +68,7 @@ inoremap <C-z> <Esc>ui
 " set tags+=/home/eboyjr/.vim/systags
 set nocp
 filetype plugin on
-filetype indent on
+filetype indent off
 
 function! SuperCleverTab()
 	if strpart(getline('.'), 0, col('.') - 1) =~ '^\s*$'

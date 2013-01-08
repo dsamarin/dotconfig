@@ -139,6 +139,62 @@ else
 fi
 
 
+#############
+# Searching #
+#############
+
+function search {
+	grep -niI -C 1 --color=auto -R "$@" .
+}
+
+#############################
+# Uploading temporary files #
+#############################
+
+function fileup {
+	local basename="$(perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$(basename "$@")")"
+	local url="http://eboyjr.oftn.org:8080/tmp/$basename"
+	if (( ${+DELL} ))
+	then
+		cp "$@" "/var/www/main/tmp/$@"
+		chmod 0777 "/var/www/main/tmp/$@"
+	else
+		scp "$@" eboyjr@eboyjr.oftn.org:/var/www/main/tmp/
+	fi
+	local url=$(shorten "$url")
+	echo -n "$url" | pbcopy
+	echo "Copied $url to clipboard."
+}
+
+function shotup {
+	local tmp="$(mktemp screenshot-XXXX.png)"
+	local url="http://eboyjr.oftn.org:8080/tmp/$tmp"
+
+	chmod 0777 "$tmp"
+
+	echo '!countdown'; sleep 1
+	echo -e '3...\a'; sleep 1
+	echo -e '2...\a'; sleep 1
+	echo -e '1...\a'; sleep 1
+	echo -e 'Go!\a'
+
+	scrot "$@" "$tmp"
+	fileup "$tmp"
+	rm -f "$tmp"
+
+	echo -en '\a'
+}
+
+
+##################
+# URL shortening #
+##################
+
+function shorten {
+	node -e 'process.stdout.write(JSON.stringify({longUrl:process.argv[1]}))' "$@" | curl --silent 'https://www.googleapis.com/urlshortener/v1/url' -H 'Content-Type: application/json' -d @- | node -e 'var j="",i=process.stdin;i.setEncoding("utf8");i.resume();i.on("data",function(b){j+=b});i.on("end",function(){process.stdout.write(JSON.parse(j).id)})'
+}
+
+
 ##################
 # Volume control #
 ##################
