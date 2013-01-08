@@ -7,7 +7,7 @@ servers = (
     use_ssl = "yes";
     ssl_verify = "yes";
     ssl_capath = "/etc/ssl/certs";
-    ssl_cert = "~/certs/eboyjr.pem";
+    ssl_cert = "~/Certs/eboyjr.pem";
     autoconnect = "yes";
   },
   {
@@ -31,7 +31,7 @@ servers = (
     chatnet = "oftn-labs";
     port = "6697";
     use_ssl = "yes";
-    ssl_cert = "~/certs/eboyjr.pem";
+    ssl_cert = "~/Certs/eboyjr.pem";
     ssl_verify = "no";
     autoconnect = "yes";
   }
