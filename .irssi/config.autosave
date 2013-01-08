@@ -1,0 +1,262 @@
+servers = (
+  {
+    # IP: 208.71.169.36
+    address = "irc.freenode.net";
+    chatnet = "freenode";
+    port = "6667";
+    autoconnect = "yes";
+    password = "sudorific";
+  }
+);
+
+chatnets = { freenode = { type = "IRC"; }; };
+
+channels = (
+  { name = "#ajax"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#arduino"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#bash"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "##c"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "##c++"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#chromium"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "##chocolatapp"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#cloud9ide"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "##compsci"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#css"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#eboyjr"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "##electronics"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#elliottcable"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#FireBug"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#freenode"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#git"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#github"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#gnu"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#html"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#inimino"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#irssi"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "##javascript"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#math"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#Node.js"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#oftn"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#perl"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "##physics"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#proglangdesign"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "##programming"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#regex"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#robotics"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#startups"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#svg"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#ubuntu"; chatnet = "freenode"; autojoin = "yes"; },
+  { 
+    name = "#ubuntu-offtopic";
+    chatnet = "freenode";
+    autojoin = "yes";
+  },
+  { name = "#unicode"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#vim"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#web"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#webkit"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#xml"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#YLM"; chatnet = "freenode"; autojoin = "yes"; }
+);
+
+aliases = {
+  SAY = "msg *";
+  CALC = "exec - if command -v bc >/dev/null 2>&1\\; then printf '%s=' '$*'\\; echo '$*' | bc -l\\; else echo bc was not found\\; fi";
+  cs = "/msg chanserv";
+  pawsmonkey = "exec -o echo \\$(cat ~/paws-monkey/*/* | wc -l) lines of code so far in PawsMonkey.";
+  disapprove = "say ಠ_ಠ";
+  sing = "say ♫ ";
+  laughout = "say $0: Hahahaha. hahahaha. hahaha.; say $0: Hahaha. haha. haha. haha. haha. and ha!";
+  op = "msg ChanServ OP $C";
+  deop = "msg ChanServ DEOP $C";
+};
+
+statusbar = {
+  # formats:
+  # when using {templates}, the template is shown only if it's argument isn't
+  # empty unless no argument is given. for example {sb} is printed always,
+  # but {sb $T} is printed only if $T isn't empty.
+
+  items = {
+    # start/end text in statusbars
+    barstart = "{sbstart}";
+    barend = "{sbend}";
+
+    topicbarstart = "{topicsbstart}";
+    topicbarend = "{topicsbend}";
+
+    # treated "normally", you could change the time/user name to whatever
+    time = "{sb $Z}";
+    user = "{sb {sbnickmode $cumode}$N{sbmode $usermode}{sbaway $A}}";
+
+    # treated specially .. window is printed with non-empty windows,
+    # window_empty is printed with empty windows
+    window = "{sb $winref:$tag/$itemname{sbmode $M}}";
+    window_empty = "{sb $winref{sbservertag $tag}}";
+    prompt = "{prompt $[.15]itemname}";
+    prompt_empty = "{prompt $winname}";
+    topic = " $topic";
+    topic_empty = " Irssi v$J - http://www.irssi.org";
+
+    # all of these treated specially, they're only displayed when needed
+    lag = "{sb Lag: $0-}";
+    act = "{sb Act: $0-}";
+    more = "-- more --";
+  };
+
+  # there's two type of statusbars. root statusbars are either at the top
+  # of the screen or at the bottom of the screen. window statusbars are at
+  # the top/bottom of each split window in screen.
+  default = {
+    # the "default statusbar" to be displayed at the bottom of the window.
+    # contains all the normal items.
+    window = {
+
+      # window, root
+      type = "window";
+      # top, bottom
+      placement = "bottom";
+      # number
+      position = "1";
+      # active, inactive, always
+      visible = "active";
+
+      # list of items in statusbar in the display order
+      items = {
+        barstart = { priority = "100"; };
+        time = { };
+        user = { };
+        window = { };
+        window_empty = { };
+        lag = { priority = "-1"; };
+        act = { };
+        more = { priority = "-1"; alignment = "right"; };
+        barend = { priority = "100"; alignment = "right"; };
+      };
+    };
+
+    # statusbar to use in inactive split windows
+    window_inact = {
+      type = "window";
+      placement = "bottom";
+      position = "1";
+      visible = "inactive";
+      items = {
+        barstart = { priority = "100"; };
+        window = { };
+        window_empty = { };
+        more = { priority = "-1"; alignment = "right"; };
+        barend = { priority = "100"; alignment = "right"; };
+      };
+    };
+
+    # we treat input line as yet another statusbar :) It's possible to
+    # add other items before or after the input line item.
+    prompt = {
+      type = "root";
+      placement = "bottom";
+      # we want to be at the bottom always
+      position = "100";
+      visible = "always";
+      items = {
+        prompt = { priority = "-1"; };
+        prompt_empty = { priority = "-1"; };
+        # treated specially, this is the real input line.
+        input = { priority = "10"; };
+      };
+    };
+
+    # topicbar
+    topic = {
+      type = "root";
+      placement = "top";
+      position = "1";
+      visible = "always";
+      items = {
+        topicbarstart = { priority = "100"; };
+        topic = { };
+        topic_empty = { };
+        topicbarend = { priority = "100"; alignment = "right"; };
+      };
+    };
+  };
+};
+settings = {
+  core = {
+    real_name = "Devin Samarin";
+    user_name = "eboyjr";
+    nick = "eboyjr";
+    quit_message = "It's just like JSON... but with different bytes.";
+    timestamp_format = "7 ſ 091";
+    log_create_mode = "755";
+  };
+  "fe-text" = {
+    actlist_sort = "refnum";
+    scroll_page_count = "/4";
+    actlist_names = "no";
+  };
+  "fe-common/core" = {
+    theme = "default";
+    autolog_path = "/var/www/main/files/irclogs/$tag/%Y/%m/%d/$0.log";
+    autolog = "yes";
+    autolog_level = "all -crap -clientcrap -msgs -ctcps";
+    completion_char = ":";
+    beep_msg_level = "MSGS NOTICES HILIGHT";
+    bell_beeps = "yes";
+    beep_when_window_active = "yes";
+    beep_when_away = "yes";
+    activity_hide_level = "";
+  };
+  "perl/core/scripts" = {
+    nicklist_automode = "SCREEN";
+    screen_away_active = "yes";
+    screen_away_repeat = "5";
+    screen_away_nick = "";
+    screen_away_message = "Not here at the moment, but I'll get back to you.";
+    ujd_fractional_digits = "3";
+    usercount_show_zero = "no";
+    usercount_show_ircops = "yes";
+  };
+  "fe-common/irc" = { show_away_once = "yes"; };
+};
+keyboard = ( 
+  { key = "meta-[M"; id = "command"; data = "mouse_xterm "; }
+);
+hilights = ( { text = "eboyjr"; nick = "yes"; word = "yes"; } );
+ignores = ( );
+logs = { };
+completions = {
+  oftn = { value = "ΩF:∅"; auto = "yes"; };
+  "..." = { value = "…"; auto = "yes"; };
+  "<3" = { value = "♥"; auto = "yes"; };
+  "->" = { value = "→"; auto = "yes"; };
+  "<-" = { value = "←"; auto = "yes"; };
+  "-^" = { value = "↑"; auto = "yes"; };
+  "-v" = { value = "↓"; auto = "yes"; };
+  "<->" = { value = "↔"; auto = "yes"; };
+  "^-v" = { value = "↕"; auto = "yes"; };
+  "=>" = { value = "≥"; auto = "yes"; };
+  "<=" = { value = "≤"; auto = "yes"; };
+  "<=>" = { value = "⇔"; auto = "yes"; };
+  "(tm)" = { value = "™"; auto = "yes"; };
+  cPaws = { value = "Buttfuck"; auto = "yes"; };
+  ssol = { value = "ſ"; auto = "yes"; };
+};
+windows = {
+  1 = { immortal = "yes"; name = "(status)"; };
+  2 = {
+    items = (
+      {
+        type = "QUERY";
+        chat_type = "IRC";
+        name = "nickserv";
+        tag = "freenode";
+      }
+    );
+  };
+  44 = { name = "hilight"; sticky = "yes"; };
+};
+mainwindows = {
+  1 = { first_line = "8"; lines = "47"; };
+  44 = { first_line = "1"; lines = "7"; };
+};
