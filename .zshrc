@@ -58,7 +58,7 @@ zle -N zle-line-finish
 setopt prompt_subst
 
 PROMPT='%(?::(exit %F{red}%?%f%)
-)%F{cyan}%n%f@%B%M%b:%~%(!/#/:) '
+)%D{%l:%M:%S%P} %F{cyan}%n%f@%B%M%b:%~%(!/#/:) '
 
 RPROMPT='$(zsh_prompt_git_branch)'
 
@@ -135,7 +135,7 @@ if (( ${+commands[xclip]} )); then
 	alias pbcopy='xclip -selection clipboard'
 	alias pbpaste='xclip -selection clipboard -o'
 else
-	alias pbcopy='echo "xlip is not available on this system"'
+	alias pbcopy='echo "xclip is not available on this system"'
 	alias pbpaste='pbcopy'
 fi
 
@@ -157,10 +157,10 @@ function fileup {
 	local url="http://eboyjr.oftn.org:8080/tmp/$basename"
 	if (( ${+DELL} ))
 	then
-		cp "$@" "/var/www/main/tmp/$@"
-		chmod 0777 "/var/www/main/tmp/$@"
+		cp "$@" "/srv/http/tmp/$@"
+		chmod 0777 "/srv/http/tmp/$@"
 	else
-		scp "$@" eboyjr@eboyjr.oftn.org:/var/www/main/tmp/
+		scp "$@" eboyjr@eboyjr.oftn.org:/srv/http/tmp/
 	fi
 	local url=$(shorten "$url")
 	echo -n "$url" | pbcopy
