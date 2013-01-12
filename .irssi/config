@@ -34,6 +34,13 @@ servers = (
     ssl_cert = "~/Certs/eboyjr.pem";
     ssl_verify = "no";
     autoconnect = "yes";
+  },
+  {
+    address = "irc.what-network.net";
+    chatnet = "what-network";
+    port = "6697";
+    use_ssl = "yes";
+    ssl_verify = "no";
   }
 );
 
@@ -43,6 +50,7 @@ chatnets = {
   mozilla = { type = "IRC"; };
   labs = { type = "IRC"; };
   "oftn-labs" = { type = "IRC"; };
+  "what-network" = { type = "IRC"; };
 };
 
 channels = (
@@ -207,7 +215,7 @@ settings = {
     autolog_path = "~/logs/irc/$tag/%Y/%m/%d/$0.log";
     autolog = "yes";
     autolog_level = "all -crap -clientcrap -msgs -ctcps";
-    completion_char = "\00311:\017";
+    completion_char = "\0033:\017";
     beep_msg_level = "MSGS NOTICES HILIGHT";
     bell_beeps = "yes";
     beep_when_window_active = "yes";
@@ -339,13 +347,22 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
+        name = "##javascript";
+        tag = "freenode";
+      }
+    );
+  };
+  3 = {
+    items = (
+      {
+        type = "CHANNEL";
+        chat_type = "IRC";
         name = "#oftn";
         tag = "freenode";
       }
     );
   };
-
-  3 = {
+  4 = {
     items = (
       {
         type = "CHANNEL";
@@ -355,18 +372,6 @@ windows = {
       }
     );
   };
-
-  4 = {
-    items = (
-      {
-        type = "CHANNEL";
-        chat_type = "IRC";
-        name = "##movieclub";
-        tag = "freenode";
-      }
-    );
-  };
-
   5 = {
     items = (
       {
@@ -382,23 +387,21 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "##chocolatapp";
+        name = "##movieclub";
         tag = "freenode";
       }
     );
   };
-
   7 = {
     items = (
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "##javascript";
+        name = "##chocolatapp";
         tag = "freenode";
       }
     );
   };
-
   8 = {
     items = (
       {
@@ -409,19 +412,7 @@ windows = {
       }
     );
   };
-
   9 = {
-    items = (
-      {
-        type = "CHANNEL";
-        chat_type = "IRC";
-        name = "#freenode-gab";
-        tag = "freenode";
-      }
-    );
-  };
-
-  10 = {
     items = (
       {
         type = "CHANNEL";
@@ -431,7 +422,16 @@ windows = {
       }
     );
   };
-
+  10 = {
+    items = (
+      {
+        type = "CHANNEL";
+        chat_type = "IRC";
+        name = "#freenode-gab";
+        tag = "freenode";
+      }
+    );
+  };
   11 = {
     items = (
       {
@@ -463,8 +463,18 @@ windows = {
     );
   };
   14 = { name = "hilight"; sticky = "yes"; };
+  15 = {
+    items = (
+      {
+        type = "CHANNEL";
+        chat_type = "IRC";
+        name = "##math";
+        tag = "freenode";
+      }
+    );
+  };
 };
 mainwindows = {
-  1 = { first_line = "10"; lines = "27"; };
+  1 = { first_line = "10"; lines = "30"; };
   14 = { first_line = "1"; lines = "9"; };
 };
