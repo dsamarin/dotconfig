@@ -58,9 +58,9 @@ zle -N zle-line-finish
 setopt prompt_subst
 
 PROMPT='%(?::(exit %F{red}%?%f%)
-)%D{%l:%M:%S%P} %F{cyan}%n%f@%B%M%b:%~%(!/#/:) '
+)%F{cyan}%n%f@%B%M%b:%~%(!/#/:) '
 
-RPROMPT='$(zsh_prompt_git_branch)'
+RPROMPT='$(zsh_prompt_git_branch) %D{%l:%M:%S%P}'
 
 function zsh_prompt_git_branch {
 	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/%F{yellow}(\1)%f/'
