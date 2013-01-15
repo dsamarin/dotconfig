@@ -1,3 +1,8 @@
+#####################
+# Environment Setup #
+#####################
+
+source ~/.env
 
 ###########
 # History #
@@ -17,6 +22,16 @@ autoload -Uz compinit
 compinit
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
+
+###########
+# Doodads #
+###########
+
+function what { echo "I don't know what ${@:2} $1." | sed 's/\s\+/ /g' }
+function how { echo "I don't know how $2 $1 ${@:3}." | sed 's/\s\+/ /g' }
+function why { echo "Because $2 $1 ${@:3}." | sed 's/\s\+/ /g' }
+function let { echo "I can't let you ${@:2}." }
+function can { local s="$1"; if [[ "${(L)s}" == "you" ]]; then s="I"; else if [[ "${(L)s}" == "i" ]] s="You"; fi; echo "${(C)s} can not ${@:2}." }
 
 ################
 # Key bindings #
