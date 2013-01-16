@@ -215,7 +215,7 @@ settings = {
     autolog_path = "~/logs/irc/$tag/%Y/%m/%d/$0.log";
     autolog = "yes";
     autolog_level = "all -crap -clientcrap -msgs -ctcps";
-    completion_char = "\0033:\017";
+    completion_char = "$";
     beep_msg_level = "MSGS NOTICES HILIGHT";
     bell_beeps = "yes";
     beep_when_window_active = "yes";
@@ -282,8 +282,6 @@ completions = {
   ":yinyang" = { value = "☯"; auto = "yes"; };
   ":recycle" = { value = "♻"; auto = "yes"; };
   ":wheelchair" = { value = "♿"; auto = "yes"; };
-  ":(" = { value = "☹"; auto = "yes"; };
-  ":)" = { value = "☺"; auto = "yes"; };
   ":mercury" = { value = "☿"; auto = "yes"; };
   ":venus" = { value = "♀"; auto = "yes"; };
   ":earth" = { value = "♁"; auto = "yes"; };

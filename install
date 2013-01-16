@@ -1,6 +1,6 @@
 #!/bin/bash
 
-files=(.vim .vimrc .gitconfig .zshrc .irssi .ssh/config)
+files=(.vim .vimrc .gitconfig .zshrc .irssi .ssh/config .tmux.conf)
 files_len=${#files[*]}
 
 # For each file in the file list

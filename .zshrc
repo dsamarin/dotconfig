@@ -237,6 +237,7 @@ function volume {
 
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
+alias tmux='tmux -2'
 
 function colors {
 	local -a colors

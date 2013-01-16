@@ -35,29 +35,29 @@ abstracts = {
   names_nick = "$0$1";
 
   # Generic statusbar
-  sb_background = "%N%U";
-  sbstart = "%G>>>%n ";
-  sbend = "%G<<<%n";
+  sb_background = "";
+  #sbstart = ">>> ";
+  #sbend = "<<<";
 
   # Channel topic
-  sb_topic_bg = "%W%U";
-  topicsbstart = "%G>>> $C";
-  topicsbend = "";
+#  sb_topic_bg = "%8";
+#  topicsbstart = "%Y$C%n";
+#  topicsbend = "";
 
   # Status items
   sb = "$*  ";
-  sbmode = "%G(%n+$*%G)%n";
+  sbmode = "[+$*]";
   sbservertag = " $0";
 
   # Activity
   sb_act_sep = "%n ";
-  sb_act_text = "%K$*%n";
+  sb_act_text = "%K $* %n";
   sb_act_msg = "$*";
-  sb_act_hilight = "%G($*)%n";
-  sb_act_hilight_color = "$0($1-)%n";
+  sb_act_hilight = "%G $* %n";
+  sb_act_hilight_color = "$0 $1- %n";
 
   # Prompt
-  prompt = "%G>>> $* ";
+  prompt = "%8%G$*%n ";
 
 };
 
