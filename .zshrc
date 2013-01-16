@@ -2,7 +2,7 @@
 # Environment Setup #
 #####################
 
-source ~/.env
+if [[ -f ~/.env ]]; then source ~/.env; fi
 
 ###########
 # History #
@@ -177,26 +177,29 @@ function fileup {
 	else
 		scp "$@" eboyjr@eboyjr.oftn.org:/srv/http/tmp/
 	fi
-	local url=$(shorten "$url")
+	#local url=$(shorten "$url")
 	echo -n "$url" | pbcopy
 	echo "Copied $url to clipboard."
 }
 
 function shotup {
-	local tmp="$(mktemp screenshot-XXXX.png)"
+	local tmp="$(date +shot-%F-t%H%M.png)"
 	local url="http://eboyjr.oftn.org:8080/tmp/$tmp"
 
-	chmod 0777 "$tmp"
+	touch "/tmp/$tmp"
+	chmod 0777 "/tmp/$tmp"
 
 	echo '!countdown'; sleep 1
 	echo -e '3...\a'; sleep 1
 	echo -e '2...\a'; sleep 1
 	echo -e '1...\a'; sleep 1
-	echo -e 'Go!\a'
 
-	scrot "$@" "$tmp"
-	fileup "$tmp"
-	rm -f "$tmp"
+	echo -e 'Go!\a'
+	scrot "$@" "/tmp/$tmp"
+	echo -e 'Uploading...\a'
+
+	fileup "/tmp/$tmp"
+	rm -f "/tmp/$tmp"
 
 	echo -en '\a'
 }
