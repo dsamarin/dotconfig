@@ -53,11 +53,11 @@ abstracts = {
   sb_act_sep = "%n ";
   sb_act_text = "%K $* %n";
   sb_act_msg = "$*";
-  sb_act_hilight = "%G $* %n";
+  sb_act_hilight = "%Y $* %n";
   sb_act_hilight_color = "$0 $1- %n";
 
   # Prompt
-  prompt = "%8%G$*%n ";
+  prompt = "%8%Y$*%n ";
 
 };
 
