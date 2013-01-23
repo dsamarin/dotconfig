@@ -167,19 +167,24 @@ function search {
 # Uploading temporary files #
 #############################
 
+function url-encode {
+	setopt extendedglob
+	echo "${${(j: :)@}//(#b)(?)/%$[[##16]##${match[1]}]}"
+}
+
 function fileup {
-	local basename="$(perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$(basename "$@")")"
-	local url="http://eboyjr.oftn.org:8080/tmp/$basename"
-	if (( ${+DELL} ))
-	then
-		cp "$@" "/srv/http/tmp/$@"
-		chmod 0777 "/srv/http/tmp/$@"
+	local basename="$(basename "$@")"
+	local escape="`url-encode "$basename"`"
+	local url="http://eboyjr.oftn.org:8080/tmp/$escape"
+	if (( ${+DELL} )); then
+		cp "$@" "/srv/http/tmp/$basename"
+		chmod 0777 "/srv/http/tmp/$basename"
 	else
 		scp "$@" eboyjr@eboyjr.oftn.org:/srv/http/tmp/
 	fi
 	#local url=$(shorten "$url")
-	echo -n "$url" | pbcopy
-	echo "Copied $url to clipboard."
+	echo "$url"
+	echo -n "$url" | pbcopy && echo "Copied to clipboard."
 }
 
 function shotup {
@@ -260,6 +265,21 @@ function colors {
 	done
 
 	print -n -- "\n\n"
+}
+
+function mandlebrot {
+	local lines columns colour a b p q i pnew
+	((columns=COLUMNS-1, lines=LINES-1, colour=0))
+	for ((b=-1.5; b<=1.5; b+=3.0/lines)) do
+		for ((a=-2.0; a<=1; a+=3.0/columns)) do
+			for ((p=0.0, q=0.0, i=0; p*p+q*q < 4 && i < 32; i++)) do
+				((pnew=p*p-q*q+a, q=2*p*q+b, p=pnew))
+			done
+			((colour=(i/4)%8))
+			echo -n "\\e[4${colour}m "
+		done
+		echo
+	done
 }
 
 

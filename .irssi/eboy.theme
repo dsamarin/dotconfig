@@ -57,7 +57,7 @@ abstracts = {
   sb_act_hilight_color = "$0 $1- %n";
 
   # Prompt
-  prompt = "%8%Y$*%n ";
+  prompt = "%8$*%n ";
 
 };
 
