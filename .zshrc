@@ -139,6 +139,25 @@ if (( ${+DELL} )); then
 else
 	alias dell='ssh -X eboyjr@192.168.2.8'
 	alias dellr='ssh -C -X eboyjr@eboyjr.oftn.org'
+
+	function tunnel {
+		local host port
+		host='localhost'
+		port='6666'
+
+		# Set proxy configuration
+		tput smso; echo "Setting proxy configuration to socks://$host:$port"; tput rmso;
+		gsettings set org.gnome.system.proxy.socks host $host
+		gsettings set org.gnome.system.proxy.socks port $port
+		gsettings set org.gnome.system.proxy mode 'manual'
+
+		# Start tunnel
+		ssh -C2TN -D $port eboyjr@eboyjr.oftn.org $@
+
+		# Reset proxy configuration
+		tput smso; echo "Setting proxy configuration to none."; tput rmso;
+		gsettings set org.gnome.system.proxy mode 'none'
+	}
 fi
 
 
