@@ -2,6 +2,8 @@
 # Environment Setup #
 #####################
 
+if (( ! ${+TMUX} )); then tmux; fi
+
 if [[ -f ~/.env ]]; then source ~/.env; fi
 
 ###########
