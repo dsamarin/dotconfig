@@ -144,21 +144,36 @@ else
 
 	function tunnel {
 		local host port
-		host='localhost'
+		host='eboyjr@eboyjr.oftn.org'
 		port='6666'
 
+		# If we have an argument, we are changing our host
+		if [[ $# -ge 1 ]]; then host=$1 fi
+
 		# Set proxy configuration
-		tput smso; echo "Setting proxy configuration to socks://$host:$port"; tput rmso;
-		gsettings set org.gnome.system.proxy.socks host $host
-		gsettings set org.gnome.system.proxy.socks port $port
-		gsettings set org.gnome.system.proxy mode 'manual'
+		if (( ${+commands[gsettings]} )); then
+			print -P "Setting proxy configuration to %Bmanual%b (localhost:%B$port%b)."
+			gsettings set org.gnome.system.proxy.socks host localhost
+			gsettings set org.gnome.system.proxy.socks port $port
+			gsettings set org.gnome.system.proxy mode 'manual'
+		else
+			print "GNOME environment not available, skipping proxy configuration."
+		fi
 
 		# Start tunnel
-		ssh -C2TN -D $port eboyjr@eboyjr.oftn.org $@
+		print -P "Connecting to %B$host%b..."
+
+		ssh -C2TNv -D $port $host 2>&1 \
+			| sed -n "s/.*direct-tcpip: listening port [0-9]* for \\([-0-9a-zA-Z.]*\\) port \\([0-9]*\\).*/Serving $(tput smul)\1$(tput sgr0) \2/p" \
+			| while read data; do print -P "%D{%l:%M:%S%P} -- $data"; done
+
+		print "Shutting down..."
 
 		# Reset proxy configuration
-		tput smso; echo "Setting proxy configuration to none."; tput rmso;
-		gsettings set org.gnome.system.proxy mode 'none'
+		if (( ${+commands[gsettings]} )); then
+			print -P "Setting proxy configuration to %Bnone%b."
+			gsettings set org.gnome.system.proxy mode 'none'
+		fi
 	}
 fi
 
