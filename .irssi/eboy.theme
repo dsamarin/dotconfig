@@ -40,9 +40,9 @@ abstracts = {
   #sbend = "<<<";
 
   # Channel topic
-#  sb_topic_bg = "%8";
-#  topicsbstart = "%Y$C%n";
-#  topicsbend = "";
+  #  sb_topic_bg = "%8";
+  #  topicsbstart = "%Y$C%n";
+  #  topicsbend = "";
 
   # Status items
   sb = "$*  ";
