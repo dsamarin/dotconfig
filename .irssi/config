@@ -1,71 +1,3 @@
-servers = (
-  {
-    # IP: 208.71.169.36
-    address = "chat.freenode.net";
-    chatnet = "freenode";
-    port = "6697";
-    use_ssl = "yes";
-    ssl_verify = "yes";
-    ssl_capath = "/etc/ssl/certs";
-    ssl_cert = "~/Certs/eboyjr.pem";
-    autoconnect = "yes";
-  },
-  {
-    address = "irc.gimp.net";
-    chatnet = "gimp";
-    port = "6667";
-    use_ssl = "no";
-    ssl_verify = "no";
-    autoconnect = "no";
-  },
-  {
-    address = "irc.mozilla.org";
-    chatnet = "mozilla";
-    port = "6667";
-    use_ssl = "no";
-    ssl_verify = "no";
-    autoconnect = "no";
-  },
-  {
-    address = "x.oftn.org";
-    chatnet = "oftn-labs";
-    port = "6697";
-    use_ssl = "yes";
-    ssl_cert = "~/Certs/eboyjr.pem";
-    ssl_verify = "no";
-    autoconnect = "yes";
-  },
-  {
-    address = "irc.what-network.net";
-    chatnet = "what-network";
-    port = "6697";
-    use_ssl = "yes";
-    ssl_verify = "no";
-  }
-);
-
-chatnets = {
-  freenode = { type = "IRC"; };
-  gimp = { type = "IRC"; };
-  mozilla = { type = "IRC"; };
-  labs = { type = "IRC"; };
-  "oftn-labs" = { type = "IRC"; };
-  "what-network" = { type = "IRC"; };
-};
-
-channels = (
-  { name = "##chocolatapp"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "#eboyjr"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "#inimino"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "##javascript"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "#oftn"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "##movieclub"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "#freenode-gab"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "##c"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "##math"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "#vr"; chatnet = "oftn-labs"; autojoin = "yes"; }
-);
-
 aliases = {
   say = "msg *";
   cs = "/msg chanserv";
@@ -249,12 +181,6 @@ hilights = (
     nick = "yes";
     word = "yes";
     regexp = "yes";
-  },
-  {
-    text = "Zhivago!*@* -color %R";
-    nick = "yes";
-    word = "yes";
-    mask = "yes";
   }
 );
 ignores = ( );
@@ -262,7 +188,6 @@ logs = { };
 completions = {
   ":oftn" = { value = "ΩF:∅"; auto = "yes"; };
   ":tm" = { value = "™"; auto = "yes"; };
-  ":-_-" = { value = "ಠ_ಠ"; auto = "yes"; };
   ":sun" = { value = "☀"; auto = "yes"; };
   ":cloud" = { value = "☁"; auto = "yes"; };
   ":umbrella" = { value = "☂"; auto = "yes"; };
@@ -337,19 +262,50 @@ completions = {
   ":3rt" = { value = "∛"; auto = "yes"; };
   ":4rt" = { value = "∜"; auto = "yes"; };
   ":approx" = { value = "≈"; auto = "yes"; };
+  ":-_-" = { value = "ಠ╭╮ಠ"; auto = "yes"; };
 };
+chatnets = {
+  freenode = {
+    type = "IRC";
+    nick = "eboy";
+    username = "eboyjr";
+    realname = "Devin Samarin";
+    max_kicks = "1";
+    max_msgs = "4";
+    max_modes = "4";
+    max_whois = "1";
+  };
+  "oftn-labs" = {
+    type = "IRC";
+    nick = "eboy";
+    username = "eboyjr";
+    realname = "Devin Samarin";
+  };
+};
+servers = (
+  {
+    address = "chat.freenode.net";
+    chatnet = "freenode";
+    port = "6697";
+    use_ssl = "yes";
+    ssl_cert = "~/Certs/eboyjr.pem";
+    ssl_verify = "yes";
+    ssl_capath = "/etc/ssl/certs";
+    autoconnect = "yes";
+  },
+  {
+    address = "x.oftn.org";
+    chatnet = "oftn-labs";
+    port = "6697";
+    use_ssl = "yes";
+    ssl_cert = "~/Certs/eboyjr.pem";
+    ssl_verify = "no";
+    autoconnect = "yes";
+  }
+);
 windows = {
   1 = { immortal = "yes"; name = "(status)"; level = "ALL"; };
-  2 = {
-    items = (
-      {
-        type = "CHANNEL";
-        chat_type = "IRC";
-        name = "##javascript";
-        tag = "freenode";
-      }
-    );
-  };
+  2 = { name = "hilight"; sticky = "yes"; };
   3 = {
     items = (
       {
@@ -375,8 +331,8 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#inimino";
-        tag = "freenode";
+        name = "#playtape";
+        tag = "oftn-labs";
       }
     );
   };
@@ -385,7 +341,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "##movieclub";
+        name = "#inimino";
         tag = "freenode";
       }
     );
@@ -395,7 +351,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "##chocolatapp";
+        name = "##movieclub";
         tag = "freenode";
       }
     );
@@ -405,7 +361,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "##c";
+        name = "##javascript";
         tag = "freenode";
       }
     );
@@ -415,7 +371,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#eboyjr";
+        name = "##c";
         tag = "freenode";
       }
     );
@@ -425,7 +381,7 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#freenode-gab";
+        name = "#eboyjr";
         tag = "freenode";
       }
     );
@@ -460,19 +416,18 @@ windows = {
       }
     );
   };
-  14 = { name = "hilight"; sticky = "yes"; };
-  15 = {
+  14 = {
     items = (
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "##math";
+        name = "#freenode-gab";
         tag = "freenode";
       }
     );
   };
 };
 mainwindows = {
-  1 = { first_line = "10"; lines = "30"; };
-  14 = { first_line = "1"; lines = "9"; };
+  1 = { first_line = "12"; lines = "49"; };
+  2 = { first_line = "1"; lines = "11"; };
 };

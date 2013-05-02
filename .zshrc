@@ -122,18 +122,9 @@ fi
 
 if (( ${+DELL} )); then
 	function irc {
-		screen -qr irssi
-		if (( $? ))
-		then
-			screen -qx irssi
-			if (( $? ))
-			then
-				screen -qS irssi irssi
-				if (( $? ))
-				then
-					echo 'Could not create irssi session.'
-				fi
-			fi
+		tmux attach-session -t irc
+		if (( $? )); then
+			tmux new-session -s irc irssi
 		fi
 	}
 else
