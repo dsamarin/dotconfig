@@ -26,7 +26,7 @@ endif
 
 syntax enable
 colorscheme lucius
-LuciusDark
+LuciusLight
 
 set fillchars+=vert:\ 
 
@@ -69,22 +69,6 @@ inoremap <C-z> <Esc>ui
 set nocp
 filetype plugin on
 filetype indent off
-
-function! SuperCleverTab()
-	if strpart(getline('.'), 0, col('.') - 1) =~ '^\s*$'
-		return "\<Tab>"
-	else
-		if &omnifunc != ''
-			return "\<C-X>\<C-O>"
-		elseif &dictionary != ''
-			return "\<C-K>"
-		else
-			return "\<C-N>"
-		endif
-	endif
-endfunction
-
-inoremap <Tab> <C-R>=SuperCleverTab()<cr>
 
 
 " Vala shit
