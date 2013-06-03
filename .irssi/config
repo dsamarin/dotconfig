@@ -12,7 +12,7 @@ aliases = {
   slap = "me slaps $0 around a bit with a large sandy whale";
   cquiet = "msg ChanServ QUIET $C";
   cunquiet = "msg ChanServ UNQUIET $C";
-  bs = "msg * $0: Error Code 4056: Your message(s) could not be delivered at this time due to the fact that eboy does not accept bullshit. Please try again never.";
+  bs = "msg * $0: Error Code 4056: Your message(s) could not be delivered at this time due to the fact that dsamarin does not accept bullshit. Please try again never.";
   boom = "say BOOM! -- http://eboyjr.oftn.org:8080/tmp/boom.gif";
 };
 
@@ -129,8 +129,8 @@ statusbar = {
 settings = {
   core = {
     real_name = "Devin Samarin";
-    user_name = "eboyjr";
-    nick = "eboy";
+    user_name = "dsamarin";
+    nick = "dsamarin";
     quit_message = "OBEY the EBOY.";
     timestamp_format = "%l:%M:%S%P";
     log_create_mode = "755";
@@ -177,7 +177,7 @@ keyboard = (
 hilights = (
   { text = "\\beboy(jr)?\\b"; nick = "yes"; word = "yes"; regexp = "yes"; },
   {
-    text = "\\b(devin|samarin)\\b";
+    text = "\\b(d?samarin)\\b";
     nick = "yes";
     word = "yes";
     regexp = "yes";
@@ -267,8 +267,8 @@ completions = {
 chatnets = {
   freenode = {
     type = "IRC";
-    nick = "eboy";
-    username = "eboyjr";
+    nick = "dsamarin";
+    username = "dsamarin";
     realname = "Devin Samarin";
     max_kicks = "1";
     max_msgs = "4";
@@ -277,8 +277,8 @@ chatnets = {
   };
   "oftn-labs" = {
     type = "IRC";
-    nick = "eboy";
-    username = "eboyjr";
+    nick = "dsamarin";
+    username = "dsamarin";
     realname = "Devin Samarin";
   };
 };
