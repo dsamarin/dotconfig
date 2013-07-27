@@ -176,7 +176,7 @@ keyboard = (
 );
 hilights = (
   { text = "\\beboy(jr)?\\b"; nick = "yes"; word = "yes"; regexp = "yes"; },
-  {
+  { 
     text = "\\b(d?samarin)\\b";
     nick = "yes";
     word = "yes";
@@ -294,12 +294,11 @@ servers = (
     autoconnect = "yes";
   },
   {
-    address = "x.oftn.org";
-    chatnet = "oftn-labs";
+    address = "talk.oftn.org";
     port = "6697";
     use_ssl = "yes";
     ssl_cert = "~/Certs/eboyjr.pem";
-    ssl_verify = "no";
+    ssl_verify = "yes";
     autoconnect = "yes";
   }
 );
@@ -431,3 +430,13 @@ mainwindows = {
   1 = { first_line = "12"; lines = "49"; };
   2 = { first_line = "1"; lines = "11"; };
 };
+channels = (
+  { name = "#playtape"; chatnet = "oftn-labs"; autojoin = "yes"; },
+  { name = "#vr"; chatnet = "oftn-labs"; autojoin = "yes"; },
+  { name = "#oftn"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#inimino"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#eboyjr"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "##movieclub"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "##javascript"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "##c"; chatnet = "freenode"; autojoin = "yes"; }
+);

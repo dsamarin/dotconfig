@@ -4,6 +4,11 @@
 
 if [[ -f ~/.env ]]; then source ~/.env; fi
 
+# Go environment
+export GOPATH=$HOME/go
+path+=/usr/local/go/bin
+path+=$GOPATH/bin
+
 ###########
 # History #
 ###########

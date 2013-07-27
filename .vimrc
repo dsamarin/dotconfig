@@ -1,5 +1,11 @@
 set nocompatible
 
+filetype off
+filetype plugin indent off
+set runtimepath+=/home/eboyjr/.vim/thirdparty/vim-golang
+filetype plugin indent on
+syntax on
+
 " Unicode
 if has("multi_byte")
 	if &termencoding == ""
