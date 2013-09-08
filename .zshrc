@@ -207,9 +207,12 @@ function url-encode {
 }
 
 function fileup {
-	local basename="$(basename "$@")"
-	local escape="`url-encode "$basename"`"
-	local url="http://eboyjr.oftn.org:8080/tmp/$escape"
+	local basename escape url
+
+	basename="$(basename "$@")"
+	#escape="`url-encode "$basename"`"
+	url="http://eboyjr.oftn.org:8080/tmp/$basename"
+
 	if (( ${+DELL} )); then
 		cp "$@" "/srv/http/tmp/$basename"
 		chmod 0777 "/srv/http/tmp/$basename"
