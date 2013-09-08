@@ -1,1 +1,1 @@
-mouse.pl
+../mouse.pl
