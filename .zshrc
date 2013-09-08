@@ -133,12 +133,12 @@ if (( ${+DELL} )); then
 		fi
 	}
 else
-	alias dell='ssh -X eboyjr@192.168.2.8'
-	alias dellr='ssh -C -X eboyjr@eboyjr.oftn.org'
+	alias dell='ssh -X dsamarin@192.168.2.8'
+	alias dellr='ssh -C -X dsamarin@dsamar.in'
 
 	function tunnel {
 		local host port
-		host='eboyjr@eboyjr.oftn.org'
+		host='dsamarin@dsamar.in'
 		port='6666'
 
 		# If we have an argument, we are changing our host
@@ -207,7 +207,7 @@ function fileup {
 
 	basename="$(basename "$@")"
 	#escape="`url-encode "$basename"`"
-	url="http://eboyjr.oftn.org:8080/tmp/$basename"
+	url="https://dsamar.in/tmp/$basename"
 
 	if (( ${+DELL} )); then
 		cp "$@" "/srv/http/tmp/$basename"
@@ -222,7 +222,7 @@ function fileup {
 
 function shotup {
 	local tmp="$(date +shot-%F-t%H%M.png)"
-	local url="http://eboyjr.oftn.org:8080/tmp/$tmp"
+	local url="https://dsamar.in/tmp/$tmp"
 
 	touch "/tmp/$tmp"
 	chmod 0777 "/tmp/$tmp"
