@@ -116,7 +116,7 @@ function preexec {
 ########################
 
 unset DELL
-if [[ "$(hostname)" == "server" ]]; then
+if [[ "$(hostname)" == "workstation" ]]; then
 	DELL=
 fi
 
