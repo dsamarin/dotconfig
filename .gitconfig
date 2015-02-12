@@ -3,3 +3,5 @@
 	email = eboyjr14@gmail.com
 [color]
 	ui = auto
+[push]
+	default = simple
