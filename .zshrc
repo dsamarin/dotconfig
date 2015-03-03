@@ -102,9 +102,13 @@ else
 fi
 
 function session {
-	tmux attach-session -t "$1"
-	if (( $? )); then
-		tmux new-session -s "$1" "${@:2}"
+	if (( $# )); then
+		tmux attach-session -t "$1"
+		if (( $? )); then
+			tmux new-session -s "$1" "${@:2}"
+		fi
+	else
+		tmux list-sessions
 	fi
 }
 
