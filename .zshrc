@@ -53,9 +53,9 @@ work_host='dsamar.in'
 work_user='dsamarin'
 work_root='/srv/dsamar.in'
 
-##############################
-# Workstation access and IRC #
-##############################
+######################
+# Workstation access #
+######################
 
 if (( ${+work_me} )); then
 	function irc {
@@ -100,6 +100,13 @@ else
 		fi
 	}
 fi
+
+function session {
+	tmux attach-session -t "$1"
+	if (( $? )); then
+		tmux new-session -s "$1" "${@:2}"
+	fi
+}
 
 if (( ${+commands[xclip]} )); then
 	alias pbcopy='xclip -selection clipboard'
