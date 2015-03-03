@@ -1,47 +1,15 @@
-#####################
-# Environment Setup #
-#####################
-
-if [[ -f ~/.env ]]; then source ~/.env; fi
-
-# Go environment
-export GOPATH=$HOME/go
-path+=/usr/local/go/bin
-path+=$GOPATH/bin
-
-###########
-# History #
-###########
-
+# History
 HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 
-
-##############
-# Completion #
-##############
-
+# Completion
 zstyle :compinstall filename '/home/eboyjr/.zshrc'
 autoload -Uz compinit
 compinit
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
-
-###########
-# Doodads #
-###########
-
-function what { echo "I don't know what ${@:2} $1." | sed 's/\s\+/ /g' }
-function how { echo "I don't know how $2 $1 ${@:3}." | sed 's/\s\+/ /g' }
-function why { echo "Because $2 $1 ${@:3}." | sed 's/\s\+/ /g' }
-function let { echo "I can't let you ${@:2}." }
-function can { local s="$1"; if [[ "${(L)s}" == "you" ]]; then s="I"; else if [[ "${(L)s}" == "i" ]] s="You"; fi; echo "${(C)s} can not ${@:2}." }
-
-################
-# Key bindings #
-################
-
+# Key bindings
 [[ -n "${terminfo[khome]}" ]] && bindkey "${terminfo[khome]}" beginning-of-line
 [[ -n "${terminfo[kend]}"  ]] && bindkey "${terminfo[kend]}"  end-of-line
 [[ -n "${terminfo[kich1]}" ]] && bindkey "${terminfo[kich1]}" overwrite-mode
@@ -53,44 +21,20 @@ function can { local s="$1"; if [[ "${(L)s}" == "you" ]]; then s="I"; else if [[
 [[ -n "${terminfo[kLFT5]}" ]] && bindkey "${terminfo[kLFT5]}" backward-word
 [[ -n "${terminfo[kRIT5]}" ]] && bindkey "${terminfo[kRIT5]}" forward-word
 
-function zle-line-init {
-	if (( ${+terminfo[smkx]} ))
-	then
-		echoti smkx
-	fi
-}
-
-function zle-line-finish {
-	if (( ${+terminfo[rmkx]} ))
-	then
-		echoti rmkx
-	fi
-}
+function zle-line-init { if (( ${+terminfo[smkx]} )); then echoti smkx; fi; }
+function zle-line-finish { if (( ${+terminfo[rmkx]} )); then echoti rmkx; fi; }
 
 zle -N zle-line-init
 zle -N zle-line-finish
 
-
-###########
-# Prompts #
-###########
-
+# Prompt
 setopt prompt_subst
-
 PROMPT='%(?::(exit %F{red}%?%f%)
 )%F{cyan}%n%f@%B%M%b:%~%(!/#/:) '
-
 RPROMPT='$(zsh_prompt_git_branch) %D{%l:%M:%S%P}'
+function zsh_prompt_git_branch { git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/%F{yellow}(\1)%f/'; }
 
-function zsh_prompt_git_branch {
-	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/%F{yellow}(\1)%f/'
-}
-
-
-#########
-# Title #
-#########
-
+# Terminal title
 function title {
 	if [[ $TERM == "screen" ]]; then
 		print -nR $'\033k'$1$'\033'\\
@@ -99,33 +43,21 @@ function title {
 		print -nR $'\033]0;'$*$'\a'
 	fi
 }
+function precmd { title "$(hostname)"; }
+function preexec { emulate -L zsh; local -a cmd; cmd=(${(z)1}); title "$(hostname): $cmd[1]:t $cmd[2,-1]" }
 
-function precmd {
-	title "$(hostname)"
-}
+# Workstation
+unset work_me
+if [[ "$(hostname)" == "workstation" ]]; then; work_me= ; fi
+work_host='dsamar.in'
+work_user='dsamarin'
+work_root='/srv/dsamar.in'
 
-function preexec {
-	emulate -L zsh
-	local -a cmd; cmd=(${(z)1})
-	title "$(hostname): $cmd[1]:t $cmd[2,-1]"
-}
+##############################
+# Workstation access and IRC #
+##############################
 
-
-########################
-# Identify Dell server #
-########################
-
-unset DELL
-if [[ "$(hostname)" == "workstation" ]]; then
-	DELL=
-fi
-
-
-#######################
-# Dell access and IRC #
-#######################
-
-if (( ${+DELL} )); then
+if (( ${+work_me} )); then
 	function irc {
 		tmux attach-session -t irc
 		if (( $? )); then
@@ -133,14 +65,12 @@ if (( ${+DELL} )); then
 		fi
 	}
 else
-	alias dell='ssh -X dsamarin@192.168.2.8'
-	alias dellr='ssh -C -X dsamarin@dsamar.in'
+	alias work="ssh -C -X $work_user@$work_host"
 
 	function tunnel {
 		local host port
-		host='dsamarin@dsamar.in'
+		host="$work_user@$work_host"
 		port='6666'
-
 		# If we have an argument, we are changing our host
 		if [[ $# -ge 1 ]]; then host=$1 fi
 
@@ -171,61 +101,45 @@ else
 	}
 fi
 
-
-##################
-# Clipboard shit #
-##################
-
 if (( ${+commands[xclip]} )); then
 	alias pbcopy='xclip -selection clipboard'
 	alias pbpaste='xclip -selection clipboard -o'
 else
-	alias pbcopy='echo "xclip is not available on this system"'
+	alias pbcopy='echo "sudo apt-get install xclip"'
 	alias pbpaste='pbcopy'
 fi
 
-
-#############
-# Searching #
-#############
-
-function search {
-	grep -niI -C 1 --color=auto -R "$@" .
-}
-
-#############################
-# Uploading temporary files #
-#############################
-
-function url-encode {
-	setopt extendedglob
-	echo "${${(j: :)@}//(#b)(?)/%$[[##16]##${match[1]}]}"
-}
+function search { grep -niI -C 1 --color=auto -R "$@" .; }
 
 function fileup {
-	local basename escape url
+	local name url path
 
-	basename="$(basename "$@")"
-	#escape="`url-encode "$basename"`"
-	url="https://dsamar.in/tmp/$basename"
+	name="${@:t}"
+	path="uploads"
 
-	if (( ${+DELL} )); then
-		cp "$@" "/srv/http/tmp/$basename"
-		chmod 0777 "/srv/http/tmp/$basename"
+	url="https://$work_host/$path/$name"
+
+	if (( ${+work_me} )); then
+		cp "$@" "$work_root/$path/$name"
+		chmod 0777 "$work_root/$path/$name"
 	else
-		scp "$@" eboyjr@eboyjr.oftn.org:/srv/http/tmp/
+		scp "$@" "$work_user@$work_host:$work_root/$path"
 	fi
-	#local url=$(shorten "$url")
+
 	echo "$url"
 	echo -n "$url" | pbcopy && echo "Copied to clipboard."
 }
 
 function shotup {
-	local tmp="$(date +shot-%F-t%H%M.png)"
-	local url="https://dsamar.in/tmp/$tmp"
+	local name="$(date +shot-%F-t%H%M.png)"
 
-	touch "/tmp/$tmp"
-	chmod 0777 "/tmp/$tmp"
+	if (( !${+commands[scrot]} )); then
+		echo 'sudo apt-get install scrot'
+		return
+	fi
+
+	touch "/tmp/$name"
+	chmod 0777 "/tmp/$name"
 
 	echo '!countdown'; sleep 1
 	echo -e '3...\a'; sleep 1
@@ -233,28 +147,18 @@ function shotup {
 	echo -e '1...\a'; sleep 1
 
 	echo -e 'Go!\a'
-	scrot "$@" "/tmp/$tmp"
+	scrot "$@" "/tmp/$name"
 	echo -e 'Uploading...\a'
 
-	fileup "/tmp/$tmp"
-	rm -f "/tmp/$tmp"
+	fileup "/tmp/$name"
+	rm -f "/tmp/$name"
 
 	echo -en '\a'
 }
 
-
-##################
-# URL shortening #
-##################
-
 function shorten {
 	node -e 'process.stdout.write(JSON.stringify({longUrl:process.argv[1]}))' "$@" | curl --silent 'https://www.googleapis.com/urlshortener/v1/url' -H 'Content-Type: application/json' -d @- | node -e 'var j="",i=process.stdin;i.setEncoding("utf8");i.resume();i.on("data",function(b){j+=b});i.on("end",function(){process.stdout.write(JSON.parse(j).id)})'
 }
-
-
-##################
-# Volume control #
-##################
 
 function volume {
 	local argument="$1"
@@ -271,61 +175,10 @@ function volume {
 	fi
 }
 
-
-##################
-# Color commands #
-##################
-
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias tmux='tmux -2'
-
-function colors {
-	local -a colors
-	colors=(default black red green yellow blue magenta cyan white)
-
-	print -n -- "\n           "
-	for color in $colors; do
-		print -n " ${(r:7:: :)color}  "
-	done
-
-	# Print each row
-	for fg in $colors; do
-		print -n -- "\n\n  ${(l:7:: :)fg}  "
-		for bg in $colors; do
-			print -nP -- " %K{$bg}%F{$fg}abc %Babc%b%f%k  "
-		done
-	done
-
-	print -n -- "\n\n"
-}
-
-function mandlebrot {
-	local lines columns colour a b p q i pnew
-	((columns=COLUMNS-1, lines=LINES-1, colour=0))
-	for ((b=-1.5; b<=1.5; b+=3.0/lines)) do
-		for ((a=-2.0; a<=1; a+=3.0/columns)) do
-			for ((p=0.0, q=0.0, i=0; p*p+q*q < 4 && i < 32; i++)) do
-				((pnew=p*p-q*q+a, q=2*p*q+b, p=pnew))
-			done
-			((colour=(i/4)%8))
-			echo -n "\\e[4${colour}m "
-		done
-		echo
-	done
-}
-
-
-###########
-# Editing #
-###########
-
 alias vim='vim -p'
-
-
-#######################
-# Directory traversal #
-#######################
 
 alias /='cd /'
 alias ~='cd ~'
