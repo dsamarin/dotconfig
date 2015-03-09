@@ -13,7 +13,6 @@ aliases = {
   cquiet = "msg ChanServ QUIET $C";
   cunquiet = "msg ChanServ UNQUIET $C";
   bs = "msg * $0: Error Code 4056: Your message(s) could not be delivered at this time due to the fact that dsamarin does not accept bullshit. Please try again never.";
-  boom = "say BOOM! -- http://eboyjr.oftn.org:8080/tmp/boom.gif";
 };
 
 statusbar = {
@@ -275,12 +274,6 @@ chatnets = {
     max_modes = "4";
     max_whois = "1";
   };
-  "oftn-labs" = {
-    type = "IRC";
-    nick = "dsamarin";
-    username = "dsamarin";
-    realname = "Devin Samarin";
-  };
 };
 servers = (
   {
@@ -288,17 +281,9 @@ servers = (
     chatnet = "freenode";
     port = "6697";
     use_ssl = "yes";
-    ssl_cert = "~/Certs/eboyjr.pem";
+    ssl_cert = "~/Certs/dsamarin.pem";
     ssl_verify = "yes";
     ssl_capath = "/etc/ssl/certs";
-    autoconnect = "yes";
-  },
-  {
-    address = "talk.oftn.org";
-    port = "6697";
-    use_ssl = "yes";
-    ssl_cert = "~/Certs/eboyjr.pem";
-    ssl_verify = "yes";
     autoconnect = "yes";
   }
 );
@@ -320,42 +305,12 @@ windows = {
       {
         type = "CHANNEL";
         chat_type = "IRC";
-        name = "#vr";
-        tag = "oftn-labs";
-      }
-    );
-  };
-  5 = {
-    items = (
-      {
-        type = "CHANNEL";
-        chat_type = "IRC";
-        name = "#playtape";
-        tag = "oftn-labs";
-      }
-    );
-  };
-  6 = {
-    items = (
-      {
-        type = "CHANNEL";
-        chat_type = "IRC";
         name = "#inimino";
         tag = "freenode";
       }
     );
   };
-  7 = {
-    items = (
-      {
-        type = "CHANNEL";
-        chat_type = "IRC";
-        name = "##movieclub";
-        tag = "freenode";
-      }
-    );
-  };
-  8 = {
+  5 = {
     items = (
       {
         type = "CHANNEL";
@@ -365,7 +320,7 @@ windows = {
       }
     );
   };
-  9 = {
+  6 = {
     items = (
       {
         type = "CHANNEL";
@@ -375,17 +330,7 @@ windows = {
       }
     );
   };
-  10 = {
-    items = (
-      {
-        type = "CHANNEL";
-        chat_type = "IRC";
-        name = "#eboyjr";
-        tag = "freenode";
-      }
-    );
-  };
-  11 = {
+  7 = {
     items = (
       {
         type = "QUERY";
@@ -395,7 +340,7 @@ windows = {
       }
     );
   };
-  12 = {
+  8 = {
     items = (
       {
         type = "QUERY";
@@ -405,7 +350,7 @@ windows = {
       }
     );
   };
-  13 = {
+  9 = {
     items = (
       {
         type = "QUERY";
@@ -415,7 +360,7 @@ windows = {
       }
     );
   };
-  14 = {
+  10 = {
     items = (
       {
         type = "CHANNEL";
@@ -431,12 +376,9 @@ mainwindows = {
   2 = { first_line = "1"; lines = "11"; };
 };
 channels = (
-  { name = "#playtape"; chatnet = "oftn-labs"; autojoin = "yes"; },
-  { name = "#vr"; chatnet = "oftn-labs"; autojoin = "yes"; },
   { name = "#oftn"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "#inimino"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "#eboyjr"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "##movieclub"; chatnet = "freenode"; autojoin = "yes"; },
   { name = "##javascript"; chatnet = "freenode"; autojoin = "yes"; },
-  { name = "##c"; chatnet = "freenode"; autojoin = "yes"; }
+  { name = "##c"; chatnet = "freenode"; autojoin = "yes"; },
+  { name = "#freenode-gab"; chatnet = "freenode"; autojoin = "yes"; }
 );

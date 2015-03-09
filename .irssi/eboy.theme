@@ -35,7 +35,7 @@ abstracts = {
   names_nick = "$0$1";
 
   # Generic statusbar
-  sb_background = "";
+  #sb_background = "";
   #sbstart = ">>> ";
   #sbend = "<<<";
 

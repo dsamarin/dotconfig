@@ -57,6 +57,9 @@ work_root='/srv/dsamar.in'
 # Workstation access #
 ######################
 
+export TERM=xterm-256color
+[ -n "$TMUX" ] && export TERM=screen-256color
+
 if (( ${+work_me} )); then
 	function irc {
 		tmux attach-session -t irc
