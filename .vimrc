@@ -24,6 +24,7 @@ set formatoptions=
 
 " Allow colors
 set t_Co=256
+set t_ut=
 
 " If the Vim binary has no GUI support, shut up CSApprox
 if !has("gui_running")
