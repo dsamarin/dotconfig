@@ -32,8 +32,8 @@ if !has("gui_running")
 endif
 
 syntax enable
-colorscheme lucius
-LuciusLight
+colorscheme mustang
+"LuciusLight
 
 set fillchars+=vert:\ 
 
