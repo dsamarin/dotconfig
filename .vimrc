@@ -52,26 +52,6 @@ set listchars=tab:→\ ,trail:·
 mapclear
 mapclear!
 
-" Normal mode
-nnoremap <C-z> u
-nnoremap <C-v> "+p
-nnoremap <C-s> :write<CR>
-nnoremap <C-a> ggVG
-
-" Visual mode
-vnoremap <C-c> "+ygv
-vnoremap <C-x> "+d
-vnoremap <C-v> d"+p
-vnoremap <BS> <Del>
-vnoremap <C-a> <Esc>ggVG
-
-
-" Insert mode
-inoremap <C-s> <Esc>:write<CR>i
-inoremap <C-v> <Esc>"+pi
-inoremap <C-z> <Esc>ui
-
-
 " set tags+=/home/eboyjr/.vim/systags
 set nocp
 filetype plugin on
