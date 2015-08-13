@@ -1,5 +1,9 @@
 set nocompatible
 
+" Get rid of working directory clutter
+set backupdir=~/.vim/.backup//
+set directory=~/.vim/.backup//
+
 filetype off
 filetype plugin indent on
 
