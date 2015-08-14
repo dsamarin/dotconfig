@@ -19,7 +19,7 @@ if has("multi_byte")
 	set fileencodings=ucs-bom,utf-8,latin1
 endif
 
-set statusline=%#Special#%f%#Normal#\ %M%R%H%W%=%-15(%#Identifier#ch%#Normal#=%b,0x%B%)%-15(L%l\ C%c%V%)%#Special#%P
+set statusline=%#Special#%f%#Normal#\ %M%R%H%W%=%#Special#%P
 set laststatus=2
 
 set virtualedit=onemore
@@ -35,8 +35,8 @@ if !has("gui_running")
 endif
 
 syntax enable
-colorscheme mustang
-"LuciusLight
+colorscheme lucius
+LuciusLight
 
 set fillchars+=vert:\ 
 
