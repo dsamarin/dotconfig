@@ -28,11 +28,19 @@ zle -N zle-line-init
 zle -N zle-line-finish
 
 # Prompt
-setopt prompt_subst
-PROMPT='%(?::(exit %F{red}%?%f%)
+function prompt_left() {
+	echo '%(?::(exit %F{red}%?%f%)
 )%F{cyan}%n%f@%B%M%b:%~%(!/#/:) '
-RPROMPT='$(zsh_prompt_git_branch) %D{%l:%M:%S%P}'
-function zsh_prompt_git_branch { git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/%F{yellow}(\1)%f/'; }
+}
+function prompt_right() {
+	#git branch --no-color 2> /dev/null | \
+	#	sed -e '/^[^*]/d' -e 's/* \(.*\)/%F{yellow}(\1)%f/'
+	#echo ' %D{%l:%M:%S%P}'
+}
+
+setopt prompt_subst
+PROMPT='$(prompt_left)'
+RPROMPT='$(prompt_right)'
 
 # Terminal title
 function title {

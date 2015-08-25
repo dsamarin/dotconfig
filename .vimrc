@@ -8,6 +8,7 @@ filetype off
 filetype plugin indent on
 
 syntax on
+let g:c_syntax_for_h = 1
 
 " Unicode
 if has("multi_byte")
@@ -48,6 +49,11 @@ set autoindent
 set mouse=a
 set tabstop=4
 set shiftwidth=4
+set cursorline
+set cursorcolumn
+set colorcolumn=80
+set completeopt=menu,menuone
+set pastetoggle=<F12>
 
 set list
 set listchars=tab:→\ ,trail:·
