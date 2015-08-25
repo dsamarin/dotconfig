@@ -27,3 +27,6 @@ done
 
 # Install required software
 sudo apt-get install git tmux zsh vim vim-youcompleteme exuberant-ctags
+
+# Update shell
+chsh -s /bin/zsh
