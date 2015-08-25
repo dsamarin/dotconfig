@@ -24,3 +24,6 @@ for ((i=0; i<files_len; i++)); do
 	echo "ln -s $PWD/${files[i]} $HOME/${files[i]}"
 	ln -s "$PWD/${files[i]}" "$HOME/${files[i]}"
 done
+
+# Install required software
+sudo apt-get install git tmux zsh vim vim-youcompleteme exuberant-ctags
