@@ -133,6 +133,10 @@ fi
 
 function search { grep -niI -C 1 --color=auto -R "$@" .; }
 
+function sloc {
+	find . -name '*.[hc]' -print0 | xargs -0 wc -l | sort -n
+}
+
 function fileup {
 	local name url path
 
