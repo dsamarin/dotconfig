@@ -54,6 +54,7 @@ set cursorcolumn
 set colorcolumn=80
 set completeopt=menu,menuone
 set pastetoggle=<F12>
+set autochdir
 
 set list
 set listchars=tab:→\ ,trail:·
@@ -61,7 +62,9 @@ set listchars=tab:→\ ,trail:·
 mapclear
 mapclear!
 
-" set tags+=/home/eboyjr/.vim/systags
+set tags=tags;
+let g:ycm_collect_identifiers_from_tags_files = 1
+
 set nocp
 filetype plugin on
 filetype indent off
