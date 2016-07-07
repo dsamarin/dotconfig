@@ -26,7 +26,12 @@ for ((i=0; i<files_len; i++)); do
 done
 
 # Install required software
-sudo apt-get install git tmux zsh vim vim-youcompleteme exuberant-ctags
+if [[ -e '/usr/bin/apt-get' ]]; then
+	sudo apt-get install git tmux zsh vim vim-youcompleteme exuberant-ctags
+fi
+if [[ -e '/usr/bin/pacman' ]]; then
+	sudo pacman --sync --needed git tmux zsh vim
+fi
 
 # Update shell
 chsh -s /bin/zsh
