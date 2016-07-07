@@ -213,3 +213,7 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias ......='cd ../../../../..'
+
+# Golang
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/gowork
