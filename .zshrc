@@ -124,6 +124,11 @@ function session {
 	fi
 }
 
+_session() {
+	reply=( $(tmux list-sessions | cut -d: -f1) )
+}
+compctl -K _session session
+
 if (( ${+commands[xclip]} )); then
 	alias pbcopy='xclip -selection clipboard'
 	alias pbpaste='xclip -selection clipboard -o'
