@@ -28,6 +28,7 @@ zle -N zle-line-init
 zle -N zle-line-finish
 
 # Prompt
+if [[ ! -z $TMUX ]]; then printf '\n'; fi
 function prompt_left() {
 	echo '%(?::(exit %F{red}%?%f%)
 )%F{cyan}%n%f@%B%M%b:%~%(!/#/:) '

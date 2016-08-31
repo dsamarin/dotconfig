@@ -54,6 +54,7 @@ set smartcase
 set incsearch
 set autoindent
 set mouse=a
+set ttymouse=xterm2
 set tabstop=4
 set shiftwidth=4
 set cursorline
