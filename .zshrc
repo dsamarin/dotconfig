@@ -115,9 +115,14 @@ fi
 
 function session {
 	if (( $# )); then
-		tmux attach-session -t "$1"
+		tmux has-session -t "$1" 2>/dev/null
 		if (( $? )); then
-			tmux new-session -s "$1" "${@:2}"
+			tmux new-session -d -s "$1" "${@:2}"
+		fi
+		if [[ ! -z $TMUX ]]; then
+			tmux switch -t "$1" "${@:2}"
+		else
+			tmux attach -t "$1" "${@:2}"
 		fi
 	else
 		tmux list-sessions
