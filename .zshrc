@@ -113,7 +113,7 @@ else
 	}
 fi
 
-function session {
+function @ {
 	if (( $# )); then
 		tmux has-session -t "$1" 2>/dev/null
 		if (( $? )); then
@@ -129,10 +129,10 @@ function session {
 	fi
 }
 
-_session() {
+_@() {
 	reply=( $(tmux list-sessions | cut -d: -f1) )
 }
-compctl -K _session session
+compctl -K _@ @
 
 if (( ${+commands[xclip]} )); then
 	alias pbcopy='xclip -selection clipboard'
