@@ -125,7 +125,7 @@ function @ {
 			tmux attach -t "$1" "${@:2}"
 		fi
 	else
-		tmux list-sessions
+		tmux list-sessions 2> /dev/null
 	fi
 }
 
