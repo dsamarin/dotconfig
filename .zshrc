@@ -2,7 +2,7 @@
 HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
-
+unsetopt PROMPT_SP
 # Completion
 zstyle :compinstall filename '/home/eboyjr/.zshrc'
 autoload -Uz compinit
@@ -212,7 +212,7 @@ function volume {
 	fi
 }
 
-alias ls='ls --color=auto'
+alias ls='ls -1 --almost-all --group-directories-first --color=auto'
 alias grep='grep --color=auto'
 alias tmux='tmux -2'
 alias vim='vim -p'
@@ -228,3 +228,6 @@ alias ......='cd ../../../../..'
 # Golang
 export PATH=$PATH:/usr/local/go/bin
 export GOPATH=$HOME/gowork
+
+setopt extendedglob
+alias apt-cyg='/cygdrive/c/Users/Devin/Downloads/Software/cygwinsetup-x86_64.exe -q -P'
