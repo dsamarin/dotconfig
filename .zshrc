@@ -227,7 +227,7 @@ alias ......='cd ../../../../..'
 
 # Golang
 export PATH=$PATH:/usr/local/go/bin
-export GOPATH=$HOME/gowork
+export GOPATH=$HOME/go
 
 setopt extendedglob
 alias apt-cyg='/cygdrive/c/Users/Devin/Downloads/Software/cygwinsetup-x86_64.exe -q -P'
