@@ -1,5 +1,10 @@
 #!/bin/bash
 
+REPO="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+DEBIAN_PACKAGES="git tmux zsh"
+PACMAN_PACKAGES="git tmux zsh"
+
 files=(.gitconfig .zshrc .ssh/config .ssh/authorized_keys .tmux.conf)
 files_len=${#files[*]}
 
@@ -21,21 +26,20 @@ for ((i=0; i<files_len; i++)); do
 	fi
 
 	# Create a symlink
-	echo "ln -s $PWD/${files[i]} $HOME/${files[i]}"
-	ln -s "$PWD/${files[i]}" "$HOME/${files[i]}"
+	echo "ln -s $REPO/${files[i]} $HOME/${files[i]}"
+	ln -s "$REPO/${files[i]}" "$HOME/${files[i]}"
 done
-
-DEBIAN_PACKAGES=git tmux zsh
-PACMAN_PACKAGES=git tmux zsh
 
 # Install required software
 if [[ -e '/usr/bin/apt' ]]; then
-	sudo apt update
+	echo "$ sudo apt install $DEBIAN_PACKAGES"
 	sudo apt install $DEBIAN_PACKAGES
 fi
 if [[ -e '/usr/bin/pacman' ]]; then
+	echo "$ sudo pacman --sync --needed $PACMAN_PACKAGES"
 	sudo pacman --sync --needed $PACMAN_PACKAGES
 fi
 
 # Update shell
+echo "$ chsh -s /bin/zsh"
 chsh -s /bin/zsh
