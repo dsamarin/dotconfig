@@ -1,9 +1,0 @@
-[submodule ".vim/thirdparty/vim-goland"]
-	path = .vim/thirdparty/vim-goland
-	url = https://github.com/jnwhiteh/vim-golang.git
-[submodule ".vim/thirdparty/vim-golang"]
-	path = .vim/thirdparty/vim-golang
-	url = https://github.com/jnwhiteh/vim-golang.git
-[submodule ".vim/bundle/Vundle.vim"]
-	path = .vim/bundle/Vundle.vim
-	url = https://github.com/VundleVim/Vundle.vim.git
