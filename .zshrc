@@ -78,10 +78,12 @@ _@() {
 }
 compctl -K _@ @
 
-# Functions
+# -- Functions -- #
+
+# search scans the current directory recursively for files containing matching regex
 function search { grep -niI -C 1 --color=auto -R "$@" .; }
 
-# Aliases
+# -- Aliases -- #
 alias ls='ls --format=vertical --almost-all --group-directories-first --color=auto'
 alias grep='grep --color=auto'
 alias tmux='tmux -2'
