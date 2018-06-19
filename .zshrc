@@ -78,8 +78,11 @@ _@() {
 }
 compctl -K _@ @
 
+# Functions
+function search { grep -niI -C 1 --color=auto -R "$@" .; }
+
 # Aliases
-alias ls='ls -1 --almost-all --group-directories-first --color=auto'
+alias ls='ls --format=vertical --almost-all --group-directories-first --color=auto'
 alias grep='grep --color=auto'
 alias tmux='tmux -2'
 
