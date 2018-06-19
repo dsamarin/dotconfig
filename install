@@ -8,6 +8,9 @@ PACMAN_PACKAGES="git tmux zsh"
 files=(.gitconfig .zshrc .ssh/config .ssh/authorized_keys .tmux.conf)
 files_len=${#files[*]}
 
+# Make common directories
+mkdir -p $HOME/bin $HOME/pkg $HOME/src $HOME/tmp
+
 # For each file in the file list
 for ((i=0; i<files_len; i++)); do
 
