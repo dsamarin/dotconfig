@@ -91,8 +91,11 @@ alias tmux='tmux -2'
 alias /='cd /'
 alias ~='cd ~'
 
+# Private binaries
+export PATH=$HOME/bin:$HOME/.yarn/bin:$PATH
+
 # Golang
-export PATH=$HOME/bin:$PATH:/usr/local/go/bin
+export PATH=$PATH:/usr/local/go/bin
 export GOPATH=$HOME
 
 setopt extendedglob
