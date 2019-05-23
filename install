@@ -9,6 +9,9 @@ PLATFORM="linux32"
 if [[ "$(uname -m)" == *"64" ]]; then
 	PLATFORM="linux64"
 fi
+if [[ "$(uname -m)" == "arm"* ]]; then
+	PLATFORM="linux-arm"
+fi
 
 files=(.gitconfig .zshrc .ssh/config .ssh/authorized_keys .tmux.conf)
 files_len=${#files[*]}
