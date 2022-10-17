@@ -57,13 +57,13 @@ if [[ -e '/usr/bin/pacman' ]]; then
 fi
 
 # -- Micro -- #
-echo "Installing micro..."
-MICRO_RELEASE=$(github-latest-tag zyedidia/micro)
-MICRO_TARBALL="https://github.com/zyedidia/micro/releases/download/v${MICRO_RELEASE}/micro-${MICRO_RELEASE}-${PLATFORM}.tar.gz"
-curl -L "$MICRO_TARBALL" > "$REPO/micro.tar.gz"
-tar -xvzf "$REPO/micro.tar.gz" "micro-${MICRO_RELEASE}/micro"
-mv "micro-${MICRO_RELEASE}/micro" "$HOME/bin/micro"
-rm -rf "$REPO/micro.tar.gz" "micro-${MICRO_RELEASE}"
+#echo "Installing micro..."
+#MICRO_RELEASE=$(github-latest-tag zyedidia/micro)
+#MICRO_TARBALL="https://github.com/zyedidia/micro/releases/download/v${MICRO_RELEASE}/micro-${MICRO_RELEASE}-${PLATFORM}.tar.gz"
+#curl -L "$MICRO_TARBALL" > "$REPO/micro.tar.gz"
+#tar -xvzf "$REPO/micro.tar.gz" "micro-${MICRO_RELEASE}/micro"
+#mv "micro-${MICRO_RELEASE}/micro" "$HOME/bin/micro"
+#rm -rf "$REPO/micro.tar.gz" "micro-${MICRO_RELEASE}"
 
 # Update shell
 echo "$ chsh -s /bin/zsh"
