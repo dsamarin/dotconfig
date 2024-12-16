@@ -89,7 +89,11 @@ compctl -K _@ @
 # -- Functions -- #
 
 # search scans the current directory recursively for files containing matching regex
-function search { grep -niI -C 1 --color=auto -R "$@" .; }
+function search {
+	tput rmam;
+	grep -niI -C 1 --color=auto -R "$@" .;
+	tput smam;
+}
 
 # -- Aliases -- #
 alias ls='ls --format=vertical --almost-all --group-directories-first --color=auto'
