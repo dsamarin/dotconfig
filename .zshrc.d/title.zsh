@@ -14,13 +14,13 @@ function title {
 }
 
 # Hook that runs before each prompt is displayed
-function precmd {
+title_precmd() {
   # Update the terminal title to the hostname before showing the prompt
   title "$(hostname)"
 }
 
 # Hook that runs before each command is executed
-function preexec {
+title_preexec() {
   # Ensure the function executes in a clean, Zsh-compatible environment
   emulate -L zsh
 
@@ -31,3 +31,6 @@ function preexec {
   # Update the terminal title to show the hostname and the command being run
   title "$(hostname): $cmd[1]:t $cmd[2,-1]"
 }
+
+preexec_functions+=(title_preexec)
+precmd_functions+=(title_precmd)
