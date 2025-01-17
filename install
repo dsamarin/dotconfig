@@ -1,5 +1,32 @@
 #!/bin/bash
 
+# Global color variables using tput
+color_reset=$(tput sgr0)      # Reset color
+color_command=$(tput bold) # Bold for the command
+color_heading=$(tput bold; tput setaf 7; tput setab 1) # Bold, white text with red background
+color_warning=$(tput setaf 3) # Yellow for warnings
+
+# Function to echo and run a command with style
+run() {
+  # Print a heading for the command
+  echo -e "${color_heading} RUN ${color_reset} ${color_command}$*${color_reset}"
+
+  # Run the command
+  "$@"
+}
+
+update_shell() {
+  local new_shell="$1"
+
+  # Check if the current shell is not the desired one
+  if [[ "$SHELL" != "$new_shell" ]]; then
+    # Update shell
+    run chsh -s "$new_shell"
+  else
+    echo "The shell is already $new_shell."
+  fi
+}
+
 REPO="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 DEBIAN_PACKAGES="git tmux zsh"
@@ -13,13 +40,8 @@ if [[ "$(uname -m)" == "arm"* ]]; then
 	PLATFORM="linux-arm"
 fi
 
-files=(.gitconfig .zshrc .ssh/config .ssh/authorized_keys .tmux.conf)
+files=(.gitconfig .zshrc .zshrc.d .ssh/config .ssh/authorized_keys .tmux.conf)
 files_len=${#files[*]}
-
-function github-latest-tag {
-    redirection=`curl https://github.com/$1/releases/latest -s -L -I -o /dev/null -w '%{url_effective}'`
-    echo "${redirection##*v}"
-}
 
 # Make common directories
 mkdir -p $HOME/bin $HOME/pkg $HOME/src $HOME/tmp
@@ -42,29 +64,15 @@ for ((i=0; i<files_len; i++)); do
 	fi
 
 	# Create a symlink
-	echo "ln -s $REPO/${files[i]} $HOME/${files[i]}"
-	ln -s "$REPO/${files[i]}" "$HOME/${files[i]}"
+	run ln -s "$REPO/${files[i]}" "$HOME/${files[i]}"
 done
 
 # Install package software
 if [[ -e '/usr/bin/apt' ]]; then
-	echo "$ sudo apt install $DEBIAN_PACKAGES"
-	sudo apt install $DEBIAN_PACKAGES
+	run sudo apt install $DEBIAN_PACKAGES
 fi
 if [[ -e '/usr/bin/pacman' ]]; then
-	echo "$ sudo pacman --sync --needed $PACMAN_PACKAGES"
-	sudo pacman --sync --needed $PACMAN_PACKAGES
+	run sudo pacman --sync --needed $PACMAN_PACKAGES
 fi
 
-# -- Micro -- #
-#echo "Installing micro..."
-#MICRO_RELEASE=$(github-latest-tag zyedidia/micro)
-#MICRO_TARBALL="https://github.com/zyedidia/micro/releases/download/v${MICRO_RELEASE}/micro-${MICRO_RELEASE}-${PLATFORM}.tar.gz"
-#curl -L "$MICRO_TARBALL" > "$REPO/micro.tar.gz"
-#tar -xvzf "$REPO/micro.tar.gz" "micro-${MICRO_RELEASE}/micro"
-#mv "micro-${MICRO_RELEASE}/micro" "$HOME/bin/micro"
-#rm -rf "$REPO/micro.tar.gz" "micro-${MICRO_RELEASE}"
-
-# Update shell
-echo "$ chsh -s /bin/zsh"
-chsh -s /bin/zsh
+update_shell /bin/zsh
