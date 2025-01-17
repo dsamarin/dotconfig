@@ -1,13 +1,12 @@
 # Prompt
-if [[ ! -z $TMUX ]]; then printf '\n'; fi
+
 function prompt_left() {
 	echo '%(?::(exit %F{red}%?%f%)
 )%F{cyan}%n%f@%B%M%b:%~%(!/#/:) '
 }
 function prompt_right() {
-	#git branch --no-color 2> /dev/null | \
-	#	sed -e '/^[^*]/d' -e 's/* \(.*\)/%F{yellow}(\1)%f/'
-	#echo ' %D{%l:%M:%S%P}'
+	git branch --no-color 2> /dev/null | \
+		sed -e '/^[^*]/d' -e 's/* \(.*\)/%F{yellow}(\1)%f/'
 }
 
 # Enables prompt substitution, allowing the shell to evaluation commands and variable expansions inside PROMPT
