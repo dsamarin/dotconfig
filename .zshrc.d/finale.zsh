@@ -1,24 +1,62 @@
-login() { cd ~/dev/prod; `make login ENVIRONMENT=development MFA=$1`; }
-loginprod() { cd ~/dev/prod; `make login ENVIRONMENT=production MFA=$1`; }
+finale_login() { cd ~/dev/prod; `make login ENVIRONMENT=development MFA=$1`; }
+finale_loginprod() { cd ~/dev/prod; `make login ENVIRONMENT=production MFA=$1`; }
 
-work() {
+finale_branch() {
   # Ensure we're in a git repository
   if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-    echo "Error: Not a git repository."
+    log_fail "Not a git repository."
     return 1
   fi
 
   # Fetch and update the master branch
-  echo "Updating master branch..."
-  git fetch origin  || { echo "Error: Failed to fetch from origin."; return 1; }
-  git branch --force master origin/master || { echo "Error: Failed to pull updates for master branch."; return 1; }
+  log_info "Updating master branch..."
+  git fetch origin || { log_fail "Failed to fetch from origin."; return 1; }
+  git branch --force master origin/master || { log_fail "Failed to fast-forward updates to master branch."; return 1; }
 
   # Generate a random 16-digit number
   local random_number=$(LC_ALL=C tr -dc '0-9' < /dev/urandom | head -c 16)
 
   # Create and checkout the new branch
   local new_branch="ds-${random_number}"
-  git checkout -b "${new_branch}" master || { echo "Error: Failed to create and checkout branch ${new_branch}."; return 1; }
+  git checkout -b "${new_branch}" master || { log_fail "Failed to create and checkout branch ${new_branch}."; return 1; }
 
-  echo "New branch '${new_branch}' created and checked out."
+  log_info "New branch '${new_branch}' created and checked out."
+}
+
+finale_push() {
+  # Ensure we're in a git repository
+  if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+    log_fail "Not a git repository."
+    return 1
+  fi
+
+  # Check if the branch name starts with "ds-"
+  if [[ "$(git rev-parse --abbrev-ref HEAD 2>/dev/null)" != ds-* ]]; then
+    log_fail "The current branch does not have the prefix 'ds-'."
+    return 1
+  fi
+
+  git push -u origin HEAD || { log_fail "Failed to push current branch to origin"; return 1; }
+}
+
+# The finale function
+f() {
+  local func_name="finale_$1"
+  shift  # Remove the first argument ($1) so remaining arguments can be passed
+
+  # Check if the function exists
+  if typeset -f "$func_name" >/dev/null; then
+    # Call the custom function with the remaining arguments
+    "$func_name" "$@"
+    return $?
+  fi
+
+  log_fail "Subcommand '${func_name#finale_}' does not exist."
+
+  log_info "Available subcommands:"
+  for func in ${(ko)functions}; do
+    [[ $func == finale_* ]] && log_info "  ${func#finale_}"
+  done
+
+  return 1
 }

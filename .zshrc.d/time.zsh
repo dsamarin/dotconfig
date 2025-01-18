@@ -25,7 +25,7 @@ time_precmd() {
       [[ $seconds -gt 0 ]] && time_string+="$seconds"s
 
       # Print the formatted elapsed time
-      echo "Last command took $time_string, completed $(date +"%I:%M:%S %p")" >&2
+      log_info "Last command took $time_string, completed $(date +"%I:%M:%S %p")"
     fi
   fi
 }
