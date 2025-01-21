@@ -51,3 +51,6 @@ zle -N zle-line-init
 
 # Initialize the 'zle-line-finish' function to be called on line finish
 zle -N zle-line-finish
+
+# Disable the bell sound in the terminal
+setopt no_beep

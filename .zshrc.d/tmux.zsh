@@ -28,9 +28,11 @@ function @ {
 
 # Define a completion function for the "@" command
 _@() {
-  # Populate the completion reply array with names of existing tmux sessions
-  reply=( $(tmux list-sessions | cut -d: -f1) )
+  # Use compadd to add the names of existing tmux sessions to the completion options
+  local sessions
+  sessions=( $(tmux list-sessions -F '#S' 2> /dev/null) )  # Use -F '#S' to directly list session names
+  compadd -- "${sessions[@]}"
 }
 
 # Register the completion function for the "@" command
-compctl -K _@ @
+compdef _@ @

@@ -1,7 +1,7 @@
 # Prompt
 
 function prompt_left() {
-	echo '%F{cyan}%n%f@%B%M%b:%~%(!/#/:) '
+	echo '%F{cyan}%n%f@%B%M%b %~%(!/#/:) '
 }
 function prompt_right() {
 	git branch --no-color 2> /dev/null | \

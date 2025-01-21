@@ -27,6 +27,8 @@ time_precmd() {
       # Print the formatted elapsed time
       log_info "Last command took ${(j: :)time_parts}, completed $(date +"%I:%M:%S %p")"
     fi
+
+    unset time_start
   fi
 }
 
