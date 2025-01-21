@@ -41,17 +41,19 @@ finale_push() {
 
 # The finale function
 f() {
-  local func_name="finale_$1"
-  shift  # Remove the first argument ($1) so remaining arguments can be passed
+  if [[ -n $1 ]]; then
+    local func_name="finale_$1"
+    shift  # Remove the first argument ($1) so remaining arguments can be passed
 
-  # Check if the function exists
-  if typeset -f "$func_name" >/dev/null; then
-    # Call the custom function with the remaining arguments
-    "$func_name" "$@"
-    return $?
+    # Check if the function exists
+    if typeset -f "$func_name" >/dev/null; then
+      # Call the custom function with the remaining arguments
+      "$func_name" "$@"
+      return $?
+    fi
+
+    log_fail "Subcommand '${func_name#finale_}' does not exist."
   fi
-
-  log_fail "Subcommand '${func_name#finale_}' does not exist."
 
   log_info "Available subcommands:"
   for func in ${(ko)functions}; do

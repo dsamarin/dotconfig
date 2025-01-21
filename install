@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Global color variables using tput
-color_reset=$(tput sgr0)      # Reset color
+color_reset=$(tput sgr0) # Reset color
 color_command=$(tput bold) # Bold for the command
 color_heading=$(tput bold; tput setaf 7; tput setab 1) # Bold, white text with red background
 color_warning=$(tput setaf 3) # Yellow for warnings
@@ -40,7 +40,7 @@ if [[ "$(uname -m)" == "arm"* ]]; then
 	PLATFORM="linux-arm"
 fi
 
-files=(.gitconfig .zshrc .zshrc.d .ssh/config .ssh/authorized_keys .tmux.conf)
+files=(.gitconfig .zshrc .zshrc.d .ssh/authorized_keys .tmux.conf)
 files_len=${#files[*]}
 
 # Make common directories

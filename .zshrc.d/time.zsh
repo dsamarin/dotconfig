@@ -7,25 +7,25 @@ time_preexec() {
 time_precmd() {
   if [[ -n $time_start ]]; then
     # Calculate the elapsed time in seconds
-    elapsed_time=$((SECONDS - time_start))
+    local elapsed_time=$((SECONDS - time_start))
 
     # Only proceed if the elapsed time is greater than 0
     if (( elapsed_time > 0 )); then
       # Calculate days, hours, minutes, and seconds
-      days=$((elapsed_time / 86400))  # 86400 seconds in a day
-      hours=$(((elapsed_time % 86400) / 3600))  # 3600 seconds in an hour
-      minutes=$(((elapsed_time % 3600) / 60))  # 60 seconds in a minute
-      seconds=$((elapsed_time % 60))
+      local days=$((elapsed_time / 86400))  # 86400 seconds in a day
+      local hours=$(((elapsed_time % 86400) / 3600))  # 3600 seconds in an hour
+      local minutes=$(((elapsed_time % 3600) / 60))  # 60 seconds in a minute
+      local seconds=$((elapsed_time % 60))
 
-      # Build the time string
-      time_string=""
-      [[ $days -gt 0 ]] && time_string+="$days"d" "
-      [[ $hours -gt 0 ]] && time_string+="$hours"h" "
-      [[ $minutes -gt 0 ]] && time_string+="$minutes"m" "
-      [[ $seconds -gt 0 ]] && time_string+="$seconds"s
+      # Build the time string using an array
+      local time_parts=()
+      [[ $days -gt 0 ]] && time_parts+="$days"d
+      [[ $days -gt 0 || $hours -gt 0 ]] && time_parts+="$hours"h
+      [[ $days -gt 0 || $hours -gt 0 || $minutes -gt 0 ]] && time_parts+="$minutes"m
+      time_parts+="$seconds"s  # Always include seconds
 
       # Print the formatted elapsed time
-      log_info "Last command took $time_string, completed $(date +"%I:%M:%S %p")"
+      log_info "Last command took ${(j: :)time_parts}, completed $(date +"%I:%M:%S %p")"
     fi
   fi
 }
