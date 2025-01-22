@@ -11,7 +11,17 @@ finale_branch() {
   # Fetch and update the master branch
   log_info "Updating master branch..."
   git fetch origin || { log_fail "Failed to fetch from origin."; return 1; }
-  git branch --force master origin/master || { log_fail "Failed to fast-forward updates to master branch."; return 1; }
+
+  # Check if 'master' is already set up as 'origin/master'
+  if [ "$(git rev-parse master)" = "$(git rev-parse origin/master)" ]; then
+    log_info "Branch 'master' is already up to date with 'origin/master'."
+  else
+    # Force update the branch if it's not up to date
+    git branch --force master origin/master || {
+      log_fail "Failed to fast-forward updates to master branch."
+      return 1
+    }
+  fi
 
   # Generate a random 16-digit number
   local random_number=$(LC_ALL=C tr -dc '0-9' < /dev/urandom | head -c 16)
