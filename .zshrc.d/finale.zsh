@@ -1,5 +1,116 @@
+confirm_command() {
+  if confirm "Do you want to run '$*'?"; then
+    "$@"
+    if [[ $? -eq 0 ]]; then
+      log_info "Command '$*' executed successfully"
+    else
+      log_fail "Command '$*' failed"
+    fi
+  else 
+    log_info "Skipped running '$*'"
+  fi
+}
+
 finale_login() { cd ~/dev/prod; `make login ENVIRONMENT=development MFA=$1`; }
 finale_loginprod() { cd ~/dev/prod; `make login ENVIRONMENT=production MFA=$1`; }
+
+finale_whowrote() {
+  if [[ -z "$1" ]]; then
+    echo "Usage: whowrote <file_name>"
+    return 1
+  fi
+
+  # Get the GitHub URL from the remote origin
+  local remote_url=$(git remote get-url origin)
+  local base_url=""
+  if [[ "$remote_url" =~ git@github.com:(.*)\.git ]]; then
+    base_url="https://github.com/${match[1]}"
+  elif [[ "$remote_url" =~ https://github.com/(.*)\.git ]]; then
+    base_url="https://github.com/${match[1]}"
+  fi
+
+  if [[ -z "$base_url" ]]; then
+    log_fail "Unable to parse GitHub repository URL from '${remote_url}'"
+    return 1
+  fi
+
+  git blame --line-porcelain "$1" | \
+    awk '
+      /^[0-9a-f]{40} / {commit = $1} 
+      /^author / {name = substr($0, 8)} 
+      /^author-time / {
+          time = $2
+          if (!latest_time[name] || time > latest_time[name]) {
+              latest_time[name] = time
+              latest_commit[name] = commit
+          }
+          count[name]++
+      } 
+      END {
+          for (name in count) {
+              print count[name], latest_commit[name], name
+          }
+      }' | \
+    sort -rn | \
+    while read -r count commit author; do
+      printf "%d lines by %s\n" "$count" "$author"
+      printf "    %s\n" "$(git log -1 --format="(%ar): %s" "$commit")"
+      printf "    %s\n" "https://github.com/search?type=pullrequests&q=$commit"
+    done | less -FRX
+}
+
+
+finale_autoship() {
+  # Use subshell so environment variables are not leaked
+  (
+    local variables
+    local finale_config
+    local aws_mfa_name
+
+    cd ~/dev/prod || { log_fail "Failed to change directory to ~/dev/prod"; return 1; }
+    
+    if ! finale_config=$(<~/.aws/finale_config); then
+      log_fail "Error: Failed to read the file ~/.aws/finale_config" >&2
+      return 1  # Exit with an error status (or use `exit 1` if outside a function)
+    fi
+
+    # Extract MFA device name from config from the last forward slash (/) to the last quotation (")
+    aws_mfa_name=${${finale_config##*/}%\"*}
+
+    while true; do
+      # Prompt for the MFA code
+      local MFA
+      read_match "Enter Amazon Web Services TOTP (${aws_mfa_name})" "[0-9]{6}" MFA
+
+      # Capture the output of `make login`
+      if variables=$(make login ENVIRONMENT=development MFA="$MFA"); then
+        break
+      fi
+      log_fail "Failed to login to development"
+    done
+
+    # Evaluate the variables in the current subshell
+    eval "${(f)variables}"
+
+    confirm_command make ssm-send-make-build
+
+    while true; do
+      # Prompt for the MFA code
+      local MFA
+      read_match "Enter Amazon Web Services TOTP (${aws_mfa_name})" "[0-9]{6}" MFA
+
+      # Capture the output of `make login`
+      if variables=$(make login ENVIRONMENT=production MFA="$MFA"); then
+        break
+      fi
+      log_fail "Failed to login to production"
+    done
+
+    confirm_command make make ssm-send-deploy-source
+
+    confirm_command make ssm-send-app-pm2-reload-not-account
+  )
+}
 
 finale_branch() {
   # Ensure we're in a git repository
@@ -8,27 +119,19 @@ finale_branch() {
     return 1
   fi
 
-  # Fetch and update the master branch
-  log_info "Updating master branch..."
+  # Fetch and update from the origin
+  log_info "Updating from origin..."
   git fetch origin || { log_fail "Failed to fetch from origin."; return 1; }
-
-  # Check if 'master' is already set up as 'origin/master'
-  if [ "$(git rev-parse master)" = "$(git rev-parse origin/master)" ]; then
-    log_info "Branch 'master' is already up to date with 'origin/master'."
-  else
-    # Force update the branch if it's not up to date
-    git branch --force master origin/master || {
-      log_fail "Failed to fast-forward updates to master branch."
-      return 1
-    }
-  fi
 
   # Generate a random 16-digit number
   local random_number=$(LC_ALL=C tr -dc '0-9' < /dev/urandom | head -c 16)
 
   # Create and checkout the new branch
   local new_branch="ds-${random_number}"
-  git checkout -b "${new_branch}" master || { log_fail "Failed to create and checkout branch ${new_branch}."; return 1; }
+  git checkout -b "${new_branch}" origin/master || {
+    log_fail "Failed to create and checkout branch ${new_branch} from origin/master."
+    return 1
+  }
 
   log_info "New branch '${new_branch}' created and checked out."
 }
