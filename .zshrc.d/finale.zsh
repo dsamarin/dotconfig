@@ -63,11 +63,15 @@ finale_whowrote() {
 finale_autoship() {
   # Use subshell so environment variables are not leaked
   (
-    local variables
+    local variables_development
+    local variables_production
     local finale_config
     local aws_mfa_name
 
     cd ~/dev/prod || { log_fail "Failed to change directory to ~/dev/prod"; return 1; }
+
+    log_info "Updating production repository"
+    git pull || { log_fail "Failed to update production repository"; return 1; }
     
     if ! finale_config=$(<~/.aws/finale_config); then
       log_fail "Error: Failed to read the file ~/.aws/finale_config" >&2
@@ -82,32 +86,27 @@ finale_autoship() {
       local MFA
       read_match "Enter Amazon Web Services TOTP (${aws_mfa_name})" "[0-9]{6}" MFA
 
-      # Capture the output of `make login`
-      if variables=$(make login ENVIRONMENT=development MFA="$MFA"); then
+      # Capture the output of `make login` for development
+      if variables_development=$(make login ENVIRONMENT=development MFA="$MFA"); then
         break
       fi
       log_fail "Failed to login to development"
-    done
 
-    # Evaluate the variables in the current subshell
-    eval "${(f)variables}"
-
-    confirm_command make ssm-send-make-build
-
-    while true; do
-      # Prompt for the MFA code
-      local MFA
-      read_match "Enter Amazon Web Services TOTP (${aws_mfa_name})" "[0-9]{6}" MFA
-
-      # Capture the output of `make login`
-      if variables=$(make login ENVIRONMENT=production MFA="$MFA"); then
+      # Capture the output of `make login` for production
+      if variables_production=$(make login ENVIRONMENT=production MFA="$MFA"); then
         break
       fi
       log_fail "Failed to login to production"
+      return 1
     done
 
-    confirm_command make make ssm-send-deploy-source
-
+    # Evaluate the development credentials variables in the current subshell
+    eval "${(f)variables_development}"
+    confirm_command make ssm-send-make-build
+    
+    # Evaluate the production credential variables in the current subshell
+    eval "${(f)variables_production}"
+    confirm_command make ssm-send-deploy-source
     confirm_command make ssm-send-app-pm2-reload-not-account
   )
 }
@@ -150,6 +149,36 @@ finale_push() {
   fi
 
   git push -u origin HEAD || { log_fail "Failed to push current branch to origin"; return 1; }
+}
+
+finale_branches() {
+      git branch --format='%(refname:short)' | while read -r branch; do
+        # Declare local variables
+        local branch_name="$branch"
+        local branch_status=""
+        local commit_msg=""
+
+        # Get the latest commit of the branch
+        local latest_commit=$(git rev-parse "$branch_name" 2>/dev/null)
+        local parent_count=$(git rev-list --parents -n 1 "$latest_commit" 2>/dev/null | awk '{print NF-1}')
+
+        # Determine branch status based on parent count
+        if [[ "$parent_count" -eq 1 ]]; then
+            if git rev-list --count origin/master.."$branch_name" 2>/dev/null | grep -q '^0$'; then
+                branch_status="merged"
+            else
+                branch_status="open"
+            fi
+            commit_msg=$(git log -1 --format='%s' "$branch_name" 2>/dev/null)
+            if [[ -z "$commit_msg" ]]; then
+                commit_msg="(No commits)"
+            fi
+        else
+            branch_status="empty"
+        fi
+        
+        printf "%-30s %-10s %s\n" "$branch_name" "[$branch_status]" "$commit_msg"
+    done
 }
 
 # The finale function
