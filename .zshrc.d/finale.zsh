@@ -1,3 +1,6 @@
+export PATH="$HOME/.tfenv/bin:$PATH"
+local finale_developer="dsamarin"
+
 confirm_command() {
   if confirm "Do you want to run '$*'?"; then
     "$@"
@@ -11,8 +14,9 @@ confirm_command() {
   fi
 }
 
-finale_login() { cd ~/dev/prod; `make login ENVIRONMENT=development MFA=$1`; }
-finale_loginprod() { cd ~/dev/prod; `make login ENVIRONMENT=production MFA=$1`; }
+finale_login() { eval "$(cd ~/dev/prod && make login ENVIRONMENT=development MFA=$1)"; }
+finale_loginprod() { eval "$(cd ~/dev/prod && make login ENVIRONMENT=production MFA=$1)"; }
+finale_logout() { eval "$(cd ~/dev/prod && make logout)"; }
 
 finale_whowrote() {
   if [[ -z "$1" ]]; then
@@ -180,6 +184,10 @@ finale_branches() {
         printf "%-30s %-10s %s\n" "$branch_name" "[$branch_status]" "$commit_msg"
     done
 }
+
+
+finale_start() { eval "$(cd ~/dev/prod && make start-dev-session DEVELOPER=$finale_developer)"; }
+finale_stop() { ( cd ~/dev/prod && make stop-dev-instance DEVELOPER=$finale_developer; ); }
 
 # The finale function
 f() {
