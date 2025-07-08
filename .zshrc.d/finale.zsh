@@ -18,52 +18,6 @@ finale_login() { eval "$(cd ~/dev/prod && make login ENVIRONMENT=development MFA
 finale_loginprod() { eval "$(cd ~/dev/prod && make login ENVIRONMENT=production MFA=$1)"; }
 finale_logout() { eval "$(cd ~/dev/prod && make logout)"; }
 
-finale_whowrote() {
-  if [[ -z "$1" ]]; then
-    echo "Usage: whowrote <file_name>"
-    return 1
-  fi
-
-  # Get the GitHub URL from the remote origin
-  local remote_url=$(git remote get-url origin)
-  local base_url=""
-  if [[ "$remote_url" =~ git@github.com:(.*)\.git ]]; then
-    base_url="https://github.com/${match[1]}"
-  elif [[ "$remote_url" =~ https://github.com/(.*)\.git ]]; then
-    base_url="https://github.com/${match[1]}"
-  fi
-
-  if [[ -z "$base_url" ]]; then
-    log_fail "Unable to parse GitHub repository URL from '${remote_url}'"
-    return 1
-  fi
-
-  git blame --line-porcelain "$1" | \
-    awk '
-      /^[0-9a-f]{40} / {commit = $1} 
-      /^author / {name = substr($0, 8)} 
-      /^author-time / {
-          time = $2
-          if (!latest_time[name] || time > latest_time[name]) {
-              latest_time[name] = time
-              latest_commit[name] = commit
-          }
-          count[name]++
-      } 
-      END {
-          for (name in count) {
-              print count[name], latest_commit[name], name
-          }
-      }' | \
-    sort -rn | \
-    while read -r count commit author; do
-      printf "%d lines by %s\n" "$count" "$author"
-      printf "    %s\n" "$(git log -1 --format="(%ar): %s" "$commit")"
-      printf "    %s\n" "https://github.com/search?type=pullrequests&q=$commit"
-    done | less -FRX
-}
-
-
 finale_autoship() {
   # Use subshell so environment variables are not leaked
   (
@@ -88,20 +42,26 @@ finale_autoship() {
     while true; do
       # Prompt for the MFA code
       local MFA
-      read_match "Enter Amazon Web Services TOTP (${aws_mfa_name})" "[0-9]{6}" MFA
+      read_match "Enter AWS TOTP for development (${aws_mfa_name})" "[0-9]{6}" MFA
 
       # Capture the output of `make login` for development
       if variables_development=$(make login ENVIRONMENT=development MFA="$MFA"); then
         break
       fi
       log_fail "Failed to login to development"
+    done
+
+    while true; do
+      # Prompt for the MFA code
+      local MFA
+      read_match "Enter AWS TOTP for production (${aws_mfa_name})" "[0-9]{6}" MFA
 
       # Capture the output of `make login` for production
+      log_info "Logging into production"
       if variables_production=$(make login ENVIRONMENT=production MFA="$MFA"); then
         break
       fi
       log_fail "Failed to login to production"
-      return 1
     done
 
     # Evaluate the development credentials variables in the current subshell
