@@ -8,6 +8,12 @@ function prompt_right() {
 		sed -e '/^[^*]/d' -e 's/* \(.*\)/%F{yellow}(\1)%f/'
 }
 
+# Reset common terminal settings without clearing the scrollback
+function prompt_precmd() {
+	tput cnorm    # Show the cursor
+	stty sane     # Reset tty modes: echo, line buffering, etc.
+}
+
 # Enables prompt substitution, allowing the shell to evaluation commands and variable expansions inside PROMPT
 setopt prompt_subst
 
@@ -19,3 +25,5 @@ setopt extendedglob
 
 PROMPT='$(prompt_left)'
 RPROMPT='$(prompt_right)'
+
+precmd_functions+=(prompt_precmd)
