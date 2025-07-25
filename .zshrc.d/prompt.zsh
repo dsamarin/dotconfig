@@ -10,8 +10,21 @@ function prompt_right() {
 
 # Reset common terminal settings without clearing the scrollback
 function prompt_precmd() {
-	tput cnorm    # Show the cursor
-	stty sane     # Reset tty modes: echo, line buffering, etc.
+  # Disable all common Xterm mouse tracking modes:
+  # \e[?1000l - Disable basic mouse click tracking
+  # \e[?1002l - Disable mouse drag tracking (button press + movement)
+  # \e[?1003l - Disable all motion tracking (even without button press)
+  # \e[?1006l - Disable SGR (extended coordinate mode) mouse reporting
+  echo -ne '\e[?1000l\e[?1002l\e[?1003l\e[?1006l'
+
+  # Clear to end of line to remove prompt artifacts, if any
+  echo -ne "\033[0K"
+
+  # Restore normal cursor visibility
+  tput cnorm
+
+  # Restore sane terminal input settings (canonical mode, echo, etc.)
+  stty sane
 }
 
 # Enables prompt substitution, allowing the shell to evaluation commands and variable expansions inside PROMPT
