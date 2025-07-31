@@ -1,4 +1,4 @@
-export PATH="$HOME/.tfenv/bin:$PATH"
+export PATH="/var/fwcs/bin/node/bin:$HOME/.tfenv/bin:$PATH"
 local finale_developer="dsamarin"
 
 confirm_command() {
