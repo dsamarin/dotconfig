@@ -1,16 +1,55 @@
 export PATH="/var/fwcs/bin/node/bin:$HOME/.tfenv/bin:$PATH"
 local finale_developer="dsamarin"
 
+typeset -gA PRECONFIRM_CHOICES
+
+preconfirm_command() {
+  local key="$*"
+  if [[ -n ${PRECONFIRM_CHOICES["$key"]+_} ]]; then
+    return 0  # Already set
+  fi
+  if confirm "Do you want to preconfirm '$key'?"; then
+    PRECONFIRM_CHOICES["$key"]="yes"
+  else
+    PRECONFIRM_CHOICES["$key"]="no"
+  fi
+}
+
+preconfirm_reset() {
+  unset PRECONFIRM_CHOICES
+  typeset -gA PRECONFIRM_CHOICES  # Re-declare to ensure it's still associative
+}
+
 confirm_command() {
-  if confirm "Do you want to run '$*'?"; then
+  local key="$*"
+  local run_command="ask"
+
+  if [[ -n ${PRECONFIRM_CHOICES["$key"]+_} ]]; then
+    if [[ ${PRECONFIRM_CHOICES["$key"]} == "yes" ]]; then
+      run_command="yes"
+    else
+      run_command="no"
+    fi
+  fi
+
+  if [[ $run_command == "ask" ]]; then
+    if confirm "Do you want to run '$key'?"; then
+      run_command="yes"
+    else
+      run_command="no"
+    fi
+  fi
+
+  if [[ $run_command == "yes" ]]; then
     "$@"
     if [[ $? -eq 0 ]]; then
-      log_info "Command '$*' executed successfully"
+      log_info "Command '$key' executed successfully"
     else
-      log_fail "Command '$*' failed"
+      log_fail "Command '$key' failed"
+      preconfirm_reset
     fi
   else 
-    log_info "Skipped running '$*'"
+    log_info "Skipped running '$key'"
   fi
 }
 
@@ -63,6 +102,11 @@ finale_autoship() {
       fi
       log_fail "Failed to login to production"
     done
+
+    preconfirm_reset
+    preconfirm_command make ssm-send-make-build
+    preconfirm_command make ssm-send-deploy-source
+    preconfirm_command make ssm-send-app-pm2-reload-not-account
 
     # Evaluate the development credentials variables in the current subshell
     eval "${(f)variables_development}"
