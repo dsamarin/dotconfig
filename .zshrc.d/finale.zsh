@@ -149,6 +149,8 @@ finale_branches() {
 finale_start() { eval "$(cd ~/dev/prod && make start-dev-session DEVELOPER=$finale_developer)"; }
 finale_stop() { ( cd ~/dev/prod && make stop-dev-instance DEVELOPER=$finale_developer; ); }
 
+finale_forward() { sudo iptables -t nat -I OUTPUT -p tcp -d 127.0.0.1 --dport 80 -j REDIRECT --to-ports 8080; }
+
 # The finale function
 f() {
   if [[ -n $1 ]]; then
