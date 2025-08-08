@@ -120,6 +120,12 @@ finale_autoship() {
 }
 
 finale_branch() {
+  # Check for required argument
+  if [[ "$1" != "master" && "$1" != "current" ]]; then
+    log_fail "Usage: $0 [master|current]"
+    return 1
+  fi
+
   # Ensure we're in a git repository
   if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     log_fail "Not a git repository."
@@ -133,10 +139,23 @@ finale_branch() {
   # Generate a random 16-digit number
   local random_number=$(LC_ALL=C tr -dc '0-9' < /dev/urandom | head -c 16)
 
+  # Determine base branch
+  local base_branch=""
+  if [[ "$1" == "master" ]]; then
+    base_branch="origin/master"
+  else
+    local current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+    if [[ -z "$current_branch" ]]; then
+      log_fail "Failed to determine current branch."
+      return 1
+    fi
+    base_branch="${current_branch}"
+  fi
+
   # Create and checkout the new branch
   local new_branch="ds-${random_number}"
-  git checkout -b "${new_branch}" origin/master || {
-    log_fail "Failed to create and checkout branch ${new_branch} from origin/master."
+  git checkout -b "${new_branch}" "${base_branch}" || {
+    log_fail "Failed to create and checkout branch ${new_branch} from ${base_branch}."
     return 1
   }
 
