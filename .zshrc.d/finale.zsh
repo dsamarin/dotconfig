@@ -10,8 +10,6 @@ preconfirm_command() {
   fi
   if confirm "Do you want to preconfirm '$key'?"; then
     PRECONFIRM_CHOICES["$key"]="yes"
-  else
-    PRECONFIRM_CHOICES["$key"]="no"
   fi
 }
 
