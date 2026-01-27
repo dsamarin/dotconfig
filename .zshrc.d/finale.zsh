@@ -1,54 +1,23 @@
 export PATH="/var/fwcs/bin/node/bin:$HOME/.tfenv/bin:$PATH"
 local finale_developer="dsamarin"
 
-typeset -gA PRECONFIRM_CHOICES
-
-preconfirm_command() {
-  local key="$*"
-  if [[ -n ${PRECONFIRM_CHOICES["$key"]+_} ]]; then
-    return 0  # Already set
-  fi
-  if confirm "Do you want to preconfirm '$key'?"; then
-    PRECONFIRM_CHOICES["$key"]="yes"
-  fi
-}
-
-preconfirm_reset() {
-  unset PRECONFIRM_CHOICES
-  typeset -gA PRECONFIRM_CHOICES  # Re-declare to ensure it's still associative
-}
-
-confirm_command() {
-  local key="$*"
-  local run_command="ask"
-
-  if [[ -n ${PRECONFIRM_CHOICES["$key"]+_} ]]; then
-    if [[ ${PRECONFIRM_CHOICES["$key"]} == "yes" ]]; then
-      run_command="yes"
-    else
-      run_command="no"
-    fi
-  fi
-
-  if [[ $run_command == "ask" ]]; then
-    if confirm "Do you want to run '$key'?"; then
-      run_command="yes"
-    else
-      run_command="no"
-    fi
-  fi
-
-  if [[ $run_command == "yes" ]]; then
+retry_command() {
+  while true; do
+    time_preexec
     "$@"
     if [[ $? -eq 0 ]]; then
-      log_info "Command '$key' executed successfully"
+      log_info "Command '$*' executed successfully"
+      time_precmd
+      break
     else
-      log_fail "Command '$key' failed"
-      preconfirm_reset
+      log_fail "Command '$*' failed"
+      time_precmd
+      if ! confirm "Do you want to retry '$*'?"; then
+        log_fail "Aborting"
+        exit 1
+      fi
     fi
-  else 
-    log_info "Skipped running '$key'"
-  fi
+  done
 }
 
 finale_login() { eval "$(cd ~/dev/prod && make login ENVIRONMENT=development MFA=$1)"; }
@@ -62,6 +31,7 @@ finale_autoship() {
     local variables_production
     local finale_config
     local aws_mfa_name
+    local run_reload_command="no"
 
     cd ~/dev/prod || { log_fail "Failed to change directory to ~/dev/prod"; return 1; }
 
@@ -101,19 +71,26 @@ finale_autoship() {
       log_fail "Failed to login to production"
     done
 
-    preconfirm_reset
-    preconfirm_command make ssm-send-make-build
-    preconfirm_command make ssm-send-deploy-source
-    preconfirm_command make ssm-send-app-pm2-reload-not-account
+    if confirm "Do you want to run 'make ssm-send-app-pm2-reload-not-account' at the end?"; then
+      run_reload_command="yes"
+    fi
 
     # Evaluate the development credentials variables in the current subshell
     eval "${(f)variables_development}"
-    confirm_command make ssm-send-make-build
+    retry_command make ssm-send-make-build
     
     # Evaluate the production credential variables in the current subshell
     eval "${(f)variables_production}"
-    confirm_command make ssm-send-deploy-source
-    confirm_command make ssm-send-app-pm2-reload-not-account
+    retry_command make ssm-send-deploy-source
+
+    if [[ $run_reload_command == "yes" ]]; then
+      retry_command make ssm-send-app-pm2-reload-iterator
+      retry_command make ssm-send-app-pm2-reload-graphql
+      retry_command make ssm-send-app-pm2-reload-stock-calc
+      retry_command make ssm-send-app-pm2-reload-api-rest
+      retry_command make ssm-send-app-pm2-reload-doc
+      retry_command make ssm-send-wfe-restart
+    fi
   )
 }
 
