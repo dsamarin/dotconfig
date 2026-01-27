@@ -20,9 +20,9 @@ retry_command() {
   done
 }
 
-finale_login() { eval "$(cd ~/dev/prod && make login ENVIRONMENT=development MFA=$1)"; }
-finale_loginprod() { eval "$(cd ~/dev/prod && make login ENVIRONMENT=production MFA=$1)"; }
-finale_logout() { eval "$(cd ~/dev/prod && make logout)"; }
+finale_login() { eval "$(cd ~/dev/prod && make sso-login PROFILE=dev)"; }
+finale_loginprod() { eval "$(cd ~/dev/prod && make sso-login PROFILE=prod)"; }
+#finale_logout() { eval "$(cd ~/dev/prod && make logout)"; }
 
 finale_autoship() {
   # Use subshell so environment variables are not leaked
@@ -183,11 +183,14 @@ finale_branches() {
     done
 }
 
+finale_forward() {
+  sudo pfctl -f /etc/pf.80.redirect.conf
+  sudo pfctl -e
+}
+
 
 finale_start() { eval "$(cd ~/dev/prod && make start-dev-session DEVELOPER=$finale_developer)"; }
 finale_stop() { ( cd ~/dev/prod && make stop-dev-instance DEVELOPER=$finale_developer; ); }
-
-finale_forward() { sudo iptables -t nat -I OUTPUT -p tcp -d 127.0.0.1 --dport 80 -j REDIRECT --to-ports 8080; }
 
 # The finale function
 f() {

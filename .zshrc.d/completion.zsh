@@ -13,7 +13,9 @@ zstyle ':completion:*' group-name ''
 # Enable a menu selection with a limit of 2 entries before automatically scrolling
 zstyle ':completion:*' menu select=2
 # Enable the `dircolors` command to set up colorized output for directory listings
-eval "$(dircolors -b)"
+if command -v dircolors &> /dev/null; then
+  eval "$(dircolors -b)"
+fi
 # Set the completion list colors based on the `LS_COLORS` environment variable
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 # Disable the default list colors for completion
