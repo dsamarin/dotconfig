@@ -51,9 +51,9 @@ confirm_command() {
   fi
 }
 
-finale_login() { eval "$(cd ~/dev/prod && make login ENVIRONMENT=development MFA=$1)"; }
-finale_loginprod() { eval "$(cd ~/dev/prod && make login ENVIRONMENT=production MFA=$1)"; }
-finale_logout() { eval "$(cd ~/dev/prod && make logout)"; }
+finale_login() { eval "$(cd ~/dev/prod && make sso-login PROFILE=dev)"; }
+finale_loginprod() { eval "$(cd ~/dev/prod && make sso-login PROFILE=prod)"; }
+#finale_logout() { eval "$(cd ~/dev/prod && make logout)"; }
 
 finale_autoship() {
   # Use subshell so environment variables are not leaked
@@ -204,6 +204,11 @@ finale_branches() {
         
         printf "%-30s %-10s %s\n" "$branch_name" "[$branch_status]" "$commit_msg"
     done
+}
+
+finale_forward() {
+  sudo pfctl -f /etc/pf.80.redirect.conf
+  sudo pfctl -e
 }
 
 
