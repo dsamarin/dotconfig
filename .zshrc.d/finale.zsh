@@ -27,60 +27,23 @@ finale_loginprod() { eval "$(cd ~/dev/prod && make sso-login PROFILE=prod)"; }
 finale_autoship() {
   # Use subshell so environment variables are not leaked
   (
-    local variables_development
-    local variables_production
-    local finale_config
-    local aws_mfa_name
     local run_reload_command="no"
 
     cd ~/dev/prod || { log_fail "Failed to change directory to ~/dev/prod"; return 1; }
 
     log_info "Updating production repository"
     git pull || { log_fail "Failed to update production repository"; return 1; }
-    
-    if ! finale_config=$(<~/.aws/finale_config); then
-      log_fail "Error: Failed to read the file ~/.aws/finale_config" >&2
-      return 1  # Exit with an error status (or use `exit 1` if outside a function)
-    fi
-
-    # Extract MFA device name from config from the last forward slash (/) to the last quotation (")
-    aws_mfa_name=${${finale_config##*/}%\"*}
-
-    while true; do
-      # Prompt for the MFA code
-      local MFA
-      read_match "Enter AWS TOTP for development (${aws_mfa_name})" "[0-9]{6}" MFA
-
-      # Capture the output of `make login` for development
-      if variables_development=$(make login ENVIRONMENT=development MFA="$MFA"); then
-        break
-      fi
-      log_fail "Failed to login to development"
-    done
-
-    while true; do
-      # Prompt for the MFA code
-      local MFA
-      read_match "Enter AWS TOTP for production (${aws_mfa_name})" "[0-9]{6}" MFA
-
-      # Capture the output of `make login` for production
-      log_info "Logging into production"
-      if variables_production=$(make login ENVIRONMENT=production MFA="$MFA"); then
-        break
-      fi
-      log_fail "Failed to login to production"
-    done
 
     if confirm "Do you want to run 'make ssm-send-app-pm2-reload-not-account' at the end?"; then
       run_reload_command="yes"
     fi
 
-    # Evaluate the development credentials variables in the current subshell
-    eval "${(f)variables_development}"
+    # Log in to development in the current subshell
+    f login
     retry_command make ssm-send-make-build
     
-    # Evaluate the production credential variables in the current subshell
-    eval "${(f)variables_production}"
+    # Log in to production in the current subshell
+    f loginprod
     retry_command make ssm-send-deploy-source
 
     if [[ $run_reload_command == "yes" ]]; then
