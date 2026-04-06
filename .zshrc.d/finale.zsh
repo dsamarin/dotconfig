@@ -22,7 +22,15 @@ retry_command() {
 
 finale_login() { eval "$(cd ~/dev/prod && make sso-login PROFILE=dev)"; }
 finale_loginprod() { eval "$(cd ~/dev/prod && make sso-login PROFILE=prod)"; }
-#finale_logout() { eval "$(cd ~/dev/prod && make logout)"; }
+
+finale_tunnel() {
+  # Use subshell so environment variables are not leaked
+  (
+    cd ~/dev/prod || { log_fail "Failed to change directory to ~/dev/prod"; return 1; }
+    f login
+    make ssh-tunnel-start
+  )
+}
 
 finale_autoship() {
   # Use subshell so environment variables are not leaked
