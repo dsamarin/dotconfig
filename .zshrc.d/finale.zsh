@@ -23,12 +23,50 @@ retry_command() {
 finale_login() { eval "$(cd ~/dev/prod && make sso-login PROFILE=dev)"; }
 finale_loginprod() { eval "$(cd ~/dev/prod && make sso-login PROFILE=prod)"; }
 
-finale_tunnel() {
+finale_launch() {
   # Use subshell so environment variables are not leaked
   (
+    local keepalive_pid=""
+
+    cleanup_keepalive() {
+      if [[ -n "$keepalive_pid" ]]; then
+        kill "$keepalive_pid" 2>/dev/null
+        log_info "Stopped SSH keepalive (pid $keepalive_pid)"
+        keepalive_pid=""
+      fi
+    }
+
+    trap 'cleanup_keepalive; exit 130' INT TERM
+    trap cleanup_keepalive EXIT
+
     cd ~/dev/prod || { log_fail "Failed to change directory to ~/dev/prod"; return 1; }
-    f login
-    make ssh-tunnel-start
+    while true; do
+      f login
+      cleanup_keepalive
+      make ssh-tunnel-start 2>&1 | while IFS= read -r line; do
+        printf '%s\n' "$line"
+        if [[ "$line" == *"Waiting for connections"* ]]; then
+          log_info "Running: code --remote ssh-remote+aws-tunnel /home/ssm-user/dev"
+          code --remote ssh-remote+aws-tunnel /home/ssm-user/dev &
+
+          # Start SSH keepalive in background
+          (
+            while true; do
+              sleep 10
+              ssh -o ConnectTimeout=5 -o ClearAllForwardings=yes aws-tunnel true 2>/dev/null
+              if [[ $? -ne 0 ]]; then
+                log_fail "SSH keepalive failed"
+              else
+                log_info "SSH keepalive succeeded"
+              fi
+            done
+          ) &
+          keepalive_pid=$!
+          log_info "Started SSH keepalive (pid $keepalive_pid)"
+        fi
+      done
+      cleanup_keepalive
+    done
   )
 }
 
