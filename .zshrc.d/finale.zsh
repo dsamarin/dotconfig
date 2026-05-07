@@ -56,8 +56,6 @@ finale_launch() {
               ssh -o ConnectTimeout=5 -o ClearAllForwardings=yes aws-tunnel true 2>/dev/null
               if [[ $? -ne 0 ]]; then
                 log_fail "SSH keepalive failed"
-              else
-                log_info "SSH keepalive succeeded"
               fi
             done
           ) &
